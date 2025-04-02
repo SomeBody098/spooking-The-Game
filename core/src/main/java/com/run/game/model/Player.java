@@ -20,8 +20,6 @@ public class Player {
 
     public static final float SPEED = MainScreen.PPM / 5 * MainScreen.UNIT_SCALE;
     public static final float TRANSITION_TO_SLEEP = 15f;
-    public static final float TIME_FOR_SCARE = 4f;
-    public static final float TIME_FOR_LAUGH = 4f;
 
     private final Color color = new Color(1, 1, 1, 1);
 
@@ -36,19 +34,6 @@ public class Player {
     private final Animation<TextureRegion> sleepAnimation;
     private float stateTimeForSleepingAnimation;
 
-    private final Animation<TextureRegion> readyToScareLeft;
-    private final Animation<TextureRegion> readyToScareDown;
-
-
-    private final Animation<TextureRegion> funnyScareAnimationRight;
-    private final Animation<TextureRegion> funnyScareAnimationUp;
-    private final Animation<TextureRegion> funnyScareAnimationDown;
-    private float stateTimeForFunnyScareAnimation;
-    private boolean hasScares = false;
-
-    private final Animation<TextureRegion> laughAnimation;
-    private float stateTimeForLaughAnimation;
-
     private float timerBeforeSleeping;
 
     private final Body body;
@@ -57,7 +42,7 @@ public class Player {
 
     private DIRECTION direction = DIRECTION.NONE;
 
-    private boolean isAppearance = false;
+    private boolean appearance = false;
 
     private float transparency = 0.2f;
 
@@ -101,48 +86,10 @@ public class Player {
             new TextureRegion(new Texture("ghost_texture/sleep/ghost_sleep3.png")),
             new TextureRegion(new Texture("ghost_texture/sleep/ghost_sleep4.png"))
         );
-
-        readyToScareLeft = new Animation<>(0.5f,
-            new TextureRegion(new Texture("ghost_texture/ready_to_scare/Ghost_left1.png")),
-            new TextureRegion(new Texture("ghost_texture/ready_to_scare/Ghost_left2.png"))
-        );
-
-        readyToScareDown = new Animation<>(0.5f,
-            new TextureRegion(new Texture("ghost_texture/ready_to_scare/Ghost_down1.png")),
-            new TextureRegion(new Texture("ghost_texture/ready_to_scare/Ghost_down2.png"))
-        );
-
-        funnyScareAnimationRight = new Animation<>(0.1f,
-            new TextureRegion(new Texture("ghost_texture/scare/scare_funny_left1.png")),
-            new TextureRegion(new Texture("ghost_texture/scare/scare_funny_left2.png"))
-        );
-
-        funnyScareAnimationDown = new Animation<>(0.1f,
-            new TextureRegion(new Texture("ghost_texture/scare/scare_funny_down1.png")),
-            new TextureRegion(new Texture("ghost_texture/scare/scare_funny_down2.png"))
-        );
-
-        funnyScareAnimationUp = new Animation<>(0.1f,
-            new TextureRegion(new Texture("ghost_texture/scare/scare_funny_up1.png")),
-            new TextureRegion(new Texture("ghost_texture/scare/scare_funny_up2.png"))
-        );
-
-        laughAnimation = new Animation<>(0.1f,
-            new TextureRegion(new Texture("ghost_texture/laugh/Ghost_laugh1.png")),
-            new TextureRegion(new Texture("ghost_texture/laugh/Ghost_laugh2.png"))
-        );
     }
 
-    public void update(float deltaTime, Joystick joystick, boolean buttonShowIsActive, boolean buttonScareIsActive) {
-        if (!hasScares) handleInput(deltaTime, joystick, buttonShowIsActive);
-
-        if (buttonScareIsActive && stateTimeForFunnyScareAnimation < TIME_FOR_SCARE && isAppearance){
-            hasScares = true;
-            stateTimeForFunnyScareAnimation += deltaTime;
-        } else {
-            hasScares = false;
-            stateTimeForFunnyScareAnimation = 0;
-        }
+    public void update(float deltaTime, Joystick joystick, boolean buttonShowIsActive) {
+        handleInput(deltaTime, joystick, buttonShowIsActive);
 
         if (timerBeforeSleeping >= TRANSITION_TO_SLEEP + onSleepingAnimation.getFrameDuration() * onSleepingAnimation.getKeyFrames().length
             && direction == DIRECTION.NONE) {
@@ -158,13 +105,14 @@ public class Player {
         }
     }
 
+
     public void draw(Batch batch, float parentAlpha) {
         float divW = width * MainScreen.UNIT_SCALE;
         float divH = height * MainScreen.UNIT_SCALE;
 
         TextureRegion currentFrame = getCurrentFrame();
 
-        if (isAppearance) {
+        if (appearance) {
             if (transparency >= 1) transparency = 1;
             else transparency += parentAlpha;
         } else {
@@ -209,8 +157,8 @@ public class Player {
             timerBeforeSleeping = 0;
         }
 
-        if (!buttonShowIsActive && isAppearance) isAppearance = false;
-        else if (buttonShowIsActive) isAppearance = true;
+        if (!buttonShowIsActive && appearance) appearance = false;
+        else if (buttonShowIsActive) appearance = true;
 
         body.setTransform(x, y, body.getAngle());
     }
@@ -227,19 +175,13 @@ public class Player {
         } else {    // иначе
 
             if (direction == DIRECTION.UP) {    // игрок перемешаятся вверх?
-
-                if (hasScares) currentFrame = funnyScareAnimationUp.getKeyFrame(stateTimeForFunnyScareAnimation, true);
-                else currentFrame = runUpAnimation.getKeyFrame(stateTimeForRunAnimations, true);
+                currentFrame = runUpAnimation.getKeyFrame(stateTimeForRunAnimations, true);
 
             } else if (direction == DIRECTION.DOWN) { // игрок перемешаятся вниз?
-
-                if (hasScares) currentFrame = funnyScareAnimationDown.getKeyFrame(stateTimeForFunnyScareAnimation, true);
-                else currentFrame = runDownAnimation.getKeyFrame(stateTimeForRunAnimations, true);
+                currentFrame = runDownAnimation.getKeyFrame(stateTimeForRunAnimations, true);
 
             } else {
-
-                if (hasScares) currentFrame = funnyScareAnimationRight.getKeyFrame(stateTimeForFunnyScareAnimation, true);
-                else currentFrame = runAnimation.getKeyFrame(stateTimeForRunAnimations, true);
+                currentFrame = runAnimation.getKeyFrame(stateTimeForRunAnimations, true);
 
                 if (direction == DIRECTION.NONE) {
                     currentFrame.flip(false, false);
@@ -283,11 +225,7 @@ public class Player {
     }
 
     public boolean isAppearance() {
-        return isAppearance;
-    }
-
-    public boolean isHasScares() {
-        return hasScares;
+        return appearance;
     }
 
     public void dispose() {
@@ -296,11 +234,5 @@ public class Player {
         Arrays.stream(runDownAnimation.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
         Arrays.stream(onSleepingAnimation.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
         Arrays.stream(sleepAnimation.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
-        Arrays.stream(readyToScareLeft.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
-        Arrays.stream(readyToScareDown.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
-        Arrays.stream(funnyScareAnimationRight.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
-        Arrays.stream(funnyScareAnimationUp.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
-        Arrays.stream(funnyScareAnimationDown.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
-        Arrays.stream(laughAnimation.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
     }
 }
