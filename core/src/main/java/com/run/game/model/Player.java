@@ -40,7 +40,7 @@ public class Player {
     private final Animation<TextureRegion> readyToScareDown;
 
 
-    private final Animation<TextureRegion> funnyScareAnimationRight;
+    private final Animation<TextureRegion> funnyScareAnimationLeft;
     private final Animation<TextureRegion> funnyScareAnimationUp;
     private final Animation<TextureRegion> funnyScareAnimationDown;
     private float stateTimeForFunnyScareAnimation;
@@ -112,7 +112,7 @@ public class Player {
             new TextureRegion(new Texture("ghost_texture/ready_to_scare/Ghost_down2.png"))
         );
 
-        funnyScareAnimationRight = new Animation<>(0.1f,
+        funnyScareAnimationLeft = new Animation<>(0.1f,
             new TextureRegion(new Texture("ghost_texture/scare/scare_funny_left1.png")),
             new TextureRegion(new Texture("ghost_texture/scare/scare_funny_left2.png"))
         );
@@ -215,46 +215,78 @@ public class Player {
         body.setTransform(x, y, body.getAngle());
     }
 
-    private TextureRegion getCurrentFrame(){
-        TextureRegion currentFrame;
-
-        if (timerBeforeSleeping >= TRANSITION_TO_SLEEP + onSleepingAnimation.getFrameDuration() * onSleepingAnimation.getKeyFrames().length) { // onSleepingAnimation отработал?
-            currentFrame = sleepAnimation.getKeyFrame(stateTimeForSleepingAnimation, true);
-
-        } else if (timerBeforeSleeping >= TRANSITION_TO_SLEEP) {    // игрок стоит без движения слишком долго?
-            currentFrame = onSleepingAnimation.getKeyFrame(stateTimeForOnSleepingAnimation, true);
-
-        } else {    // иначе
-
-            if (direction == DIRECTION.UP) {    // игрок перемешаятся вверх?
-
-                if (hasScares) currentFrame = funnyScareAnimationUp.getKeyFrame(stateTimeForFunnyScareAnimation, true);
-                else currentFrame = runUpAnimation.getKeyFrame(stateTimeForRunAnimations, true);
-
-            } else if (direction == DIRECTION.DOWN) { // игрок перемешаятся вниз?
-
-                if (hasScares) currentFrame = funnyScareAnimationDown.getKeyFrame(stateTimeForFunnyScareAnimation, true);
-                else currentFrame = runDownAnimation.getKeyFrame(stateTimeForRunAnimations, true);
-
-            } else {
-
-                if (hasScares) currentFrame = funnyScareAnimationRight.getKeyFrame(stateTimeForFunnyScareAnimation, true);
-                else currentFrame = runAnimation.getKeyFrame(stateTimeForRunAnimations, true);
-
-                if (direction == DIRECTION.NONE) {
-                    currentFrame.flip(false, false);
-
-                } else if (direction == DIRECTION.RIGHT && !currentFrame.isFlipX()) {   // игрок перемешаятся вправо?
-
-                    currentFrame.flip(true, false);
-                } else if (direction == DIRECTION.LEFT && currentFrame.isFlipX()) {     // игрок перемешаятся влево?
-
-                    currentFrame.flip(true, false);
-                }
-            }
+    private TextureRegion getCurrentFrame() {
+        // 1. Проверка анимации сна (самый высокий приоритет)
+        if (shouldPlaySleepAnimation()) {
+            return getSleepAnimationFrame();
         }
 
-        return currentFrame;
+        // 2. Проверка анимации засыпания
+        if (shouldPlayOnSleepingAnimation()) {
+            return getOnSleepingAnimationFrame();
+        }
+
+        // 3. Обработка движения/испуга
+        return getMovementAnimationFrame();
+    }
+
+// --- Вспомогательные методы ---
+
+    private boolean shouldPlaySleepAnimation() {
+        return timerBeforeSleeping >= TRANSITION_TO_SLEEP +
+            onSleepingAnimation.getFrameDuration();
+    }
+
+    private TextureRegion getSleepAnimationFrame() {
+        return sleepAnimation.getKeyFrame(stateTimeForSleepingAnimation, true);
+    }
+
+    private boolean shouldPlayOnSleepingAnimation() {
+        return timerBeforeSleeping >= TRANSITION_TO_SLEEP;
+    }
+
+    private TextureRegion getOnSleepingAnimationFrame() {
+        return onSleepingAnimation.getKeyFrame(stateTimeForOnSleepingAnimation, true);
+    }
+
+    private TextureRegion getMovementAnimationFrame() {
+        Animation<TextureRegion> animation = getBaseAnimation();
+        TextureRegion frame = animation.getKeyFrame(stateTimeForRunAnimations, true);
+
+        handleDirectionFlipping(frame);
+        return frame;
+    }
+
+    private Animation<TextureRegion> getBaseAnimation() {
+        if (!hasScares) {
+            return getRunAnimation();
+        }
+        return getScareAnimation();
+    }
+
+    private Animation<TextureRegion> getScareAnimation() {
+        switch (direction) {
+            case UP: return funnyScareAnimationUp;
+            case DOWN: return funnyScareAnimationDown;
+            default: return funnyScareAnimationLeft;
+        }
+    }
+
+    private void handleDirectionFlipping(TextureRegion frame) {
+        if (direction == DIRECTION.RIGHT && !frame.isFlipX()) {
+            frame.flip(true, false);
+        }
+        else if (direction == DIRECTION.LEFT && frame.isFlipX()) {
+            frame.flip(true, false);
+        }
+    }
+
+    private Animation<TextureRegion> getRunAnimation() {
+        switch (direction) {
+            case UP: return runUpAnimation;
+            case DOWN: return runDownAnimation;
+            default: return runAnimation;
+        }
     }
 
     private Body createBody(float x, float y, float wight, float height, World world) {
@@ -298,7 +330,7 @@ public class Player {
         Arrays.stream(sleepAnimation.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
         Arrays.stream(readyToScareLeft.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
         Arrays.stream(readyToScareDown.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
-        Arrays.stream(funnyScareAnimationRight.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
+        Arrays.stream(funnyScareAnimationLeft.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
         Arrays.stream(funnyScareAnimationUp.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
         Arrays.stream(funnyScareAnimationDown.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
         Arrays.stream(laughAnimation.getKeyFrames()).map(TextureRegion::getTexture).forEach(Texture::dispose);
