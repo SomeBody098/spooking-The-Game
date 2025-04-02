@@ -216,7 +216,7 @@ public class Player {
     }
 
     private TextureRegion getCurrentFrame() {
-        // 1. Проверка анимации сна (самый высокий приоритет)
+        // 1. Проверка анимации сна (самый высокий приоритет).
         if (shouldPlaySleepAnimation()) {
             return getSleepAnimationFrame();
         }
