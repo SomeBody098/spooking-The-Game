@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.model.Brick;
 import com.run.game.model.Human;
+import com.run.game.model.ui.ButtonScare;
 import com.run.game.model.ui.ButtonShow;
 import com.run.game.model.ui.Joystick;
 import com.run.game.model.Player;
@@ -35,6 +36,7 @@ public class MainScreen implements Screen {
 
     private final Joystick joystick;
     private final ButtonShow buttonShow;
+    private final ButtonScare buttonScare;
 
     private final Human human;
 
@@ -109,11 +111,20 @@ public class MainScreen implements Screen {
         );
 
         float buttonSize = uiCamera.viewportHeight * 0.1f; // 10% от высоты
-        float buttonMargin = buttonSize * 0.5f;
+        float buttonShowMargin = buttonSize * 0.5f;
 
         buttonShow = new ButtonShow(
-            uiCamera.viewportWidth - buttonSize - buttonMargin,
-            buttonMargin,
+            uiCamera.viewportWidth - buttonSize - buttonShowMargin,
+            buttonShowMargin,
+            buttonSize,
+            buttonSize
+        );
+
+        float buttonScareMargin = buttonSize * 0.5f;
+
+        buttonScare = new ButtonScare(
+            uiCamera.viewportWidth - buttonSize - buttonScareMargin,
+            buttonScareMargin + buttonShow.getHeight(),
             buttonSize,
             buttonSize
         );
@@ -121,6 +132,7 @@ public class MainScreen implements Screen {
         stage = new Stage(new ScreenViewport(uiCamera), uiBatch);
         stage.addActor(buttonShow);
         stage.addActor(joystick);
+        stage.addActor(buttonScare);
 
         Gdx.input.setInputProcessor(new InputMultiplexer(joystick, stage));
 
@@ -157,7 +169,7 @@ public class MainScreen implements Screen {
         world.step(delta, 6, 6);
         gameCamera.update();
         uiCamera.update();
-        player.update(delta, joystick, buttonShow.isActive());
+        player.update(delta, joystick, buttonShow.isActive(), buttonScare.isActive());
         human.update(world, player.getBody().getPosition(), delta, player.isAppearance());
 
 //        gameCamera.position.x = player.getBody().getPosition().x;
