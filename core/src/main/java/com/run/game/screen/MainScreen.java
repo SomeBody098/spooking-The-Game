@@ -126,7 +126,8 @@ public class MainScreen implements Screen {
             uiCamera.viewportWidth - buttonSize - buttonScareMargin,
             buttonScareMargin + buttonShow.getHeight(),
             buttonSize,
-            buttonSize
+            buttonSize,
+            Player.TIME_FOR_SCARE + Player.TIME_FOR_LAUGH
         );
 
         stage = new Stage(new ScreenViewport(uiCamera), uiBatch);
@@ -146,8 +147,6 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        update(delta);
-
         box2DDebugRenderer.render(world, gameCamera.combined);
 
         gameBatch.setProjectionMatrix(gameCamera.combined);
@@ -163,14 +162,20 @@ public class MainScreen implements Screen {
         uiBatch.setProjectionMatrix(uiCamera.combined);
         stage.act(delta);
         stage.draw();
+
+        update(delta);
     }
 
     private void update(float delta){
         world.step(delta, 6, 6);
         gameCamera.update();
         uiCamera.update();
-        player.update(delta, joystick, buttonShow.isActive(), buttonScare.isActive());
+        player.update(delta, joystick, buttonShow.isActive(), buttonScare.isAbilityActive());
         human.update(world, player.getBody().getPosition(), delta, player.isAppearance());
+
+        // ui
+
+        buttonScare.canActive(player.isAppearance());
 
 //        gameCamera.position.x = player.getBody().getPosition().x;
 //        gameCamera.position.y = player.getBody().getPosition().y;

@@ -6,31 +6,64 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-public class ButtonScare extends Button { // TODO: 01.04.2025 в будущем, реализовать блокировку кнопки на время
-    private boolean isActive = false;
+public class ButtonScare extends Button {
+    private final float cooldownDuration; // Длительность эффекта
+    private float remainingCooldown = 0f;
+    private boolean isOnCooldown = false;
 
-    public ButtonScare(float x, float y, float width, float height) {
-        Button.ButtonStyle style = new Button.ButtonStyle();
+    public ButtonScare(float x, float y, float width, float height, float cooldownDuration) {
+        super(new ButtonStyle(
+            new TextureRegionDrawable(new Texture("ui/buttonScareTexture/up.png")),
+            new TextureRegionDrawable(new Texture("ui/buttonScareTexture/down.png")),
+            null
+        ));
 
-        style.up = new TextureRegionDrawable(new Texture("ui/buttonScareTexture/up.png"));
-        style.down = new TextureRegionDrawable(new Texture("ui/buttonScareTexture/down.png"));
+        this.cooldownDuration = cooldownDuration;
 
-        super.setStyle(style);
+        setBounds(x, y, width, height);
+        setupListeners();
+    }
 
-        super.setPosition(x, y);
-        super.setWidth(width);
-        super.setHeight(height);
-
-        super.addListener(new ClickListener(){
+    private void setupListeners() {
+        addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isActive = !isActive;
-                super.clicked(event, x, y);
+                if (!isOnCooldown) {
+                    activateAbility();
+                }
             }
         });
     }
 
-    public boolean isActive() {
-        return isActive;
+    private void activateAbility() {
+        isOnCooldown = true;
+        remainingCooldown = cooldownDuration;
+    }
+
+    @Override
+    public void act(float delta) {
+        if (isOnCooldown) {
+            remainingCooldown -= delta;
+
+            if (remainingCooldown <= 0) {
+                isOnCooldown = false;
+                remainingCooldown = 0;
+            }
+        }
+
+        super.act(delta);
+    }
+
+    public boolean canActive(boolean playerIsAppearance){
+        if (!playerIsAppearance) {
+            isOnCooldown = false;
+            remainingCooldown = 0;
+        }
+
+        return playerIsAppearance;
+    }
+
+    public boolean isAbilityActive() {
+        return isOnCooldown;
     }
 }

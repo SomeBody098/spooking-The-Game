@@ -74,8 +74,6 @@ public class Joystick extends Actor implements InputProcessor{
                     (dir.y < -0.3f) ? DIRECTION.DOWN :
                         direction;
             }
-        } else {
-            direction = DIRECTION.NONE;
         }
     }
 

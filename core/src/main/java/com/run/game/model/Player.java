@@ -20,8 +20,8 @@ public class Player {
 
     public static final float SPEED = MainScreen.PPM / 5 * MainScreen.UNIT_SCALE;
     public static final float TRANSITION_TO_SLEEP = 15f;
-    public static final float TIME_FOR_SCARE = 4f;
-    public static final float TIME_FOR_LAUGH = 4f;
+    public static final float TIME_FOR_SCARE = 2f;
+    public static final float TIME_FOR_LAUGH = 2f;
 
     private final Color color = new Color(1, 1, 1, 1);
 
@@ -136,19 +136,23 @@ public class Player {
     public void update(float deltaTime, Joystick joystick, boolean buttonShowIsActive, boolean buttonScareIsActive) {
         if (!hasScares) handleInput(deltaTime, joystick, buttonShowIsActive);
 
-        if (buttonScareIsActive && stateTimeForFunnyScareAnimation < TIME_FOR_SCARE && isAppearance){
+        if (buttonScareIsActive && shouldPlayScareAnimation() && isAppearance && !shouldPlayLaughAnimation()){
             hasScares = true;
             stateTimeForFunnyScareAnimation += deltaTime;
+
+        } else if (shouldPlayLaughAnimation()){
+            stateTimeForLaughAnimation += deltaTime;
+
         } else {
+            stateTimeForLaughAnimation = 0;
             hasScares = false;
             stateTimeForFunnyScareAnimation = 0;
         }
 
-        if (timerBeforeSleeping >= TRANSITION_TO_SLEEP + onSleepingAnimation.getFrameDuration() * onSleepingAnimation.getKeyFrames().length
-            && direction == DIRECTION.NONE) {
+        if (shouldPlaySleepAnimation()) {
             stateTimeForSleepingAnimation += deltaTime;
 
-        } else if (timerBeforeSleeping >= TRANSITION_TO_SLEEP) {
+        } else if (shouldPlayOnSleepingAnimation()) {
             stateTimeForOnSleepingAnimation += deltaTime;
 
         } else {
@@ -156,6 +160,33 @@ public class Player {
             stateTimeForSleepingAnimation = 0;
             stateTimeForOnSleepingAnimation = 0;
         }
+    }
+
+    private void handleInput(float delta, Joystick joystick, boolean buttonShowIsActive) {
+        boolean playerHasStopMoving = true;
+        float x = body.getPosition().x;
+        float y = body.getPosition().y;
+
+        if (joystick.isActive()){
+            Vector2 position = joystick.getNorPositionStick();
+            direction = joystick.getDirection();
+
+            x += position.x * SPEED;
+            y += position.y * SPEED;
+
+            playerHasStopMoving = false;
+        }
+
+        if (playerHasStopMoving) {
+            timerBeforeSleeping += delta;
+        } else {
+            timerBeforeSleeping = 0;
+        }
+
+        if (!buttonShowIsActive && isAppearance) isAppearance = false;
+        else if (buttonShowIsActive) isAppearance = true;
+
+        body.setTransform(x, y, body.getAngle());
     }
 
     public void draw(Batch batch, float parentAlpha) {
@@ -187,43 +218,20 @@ public class Player {
 //        Gdx.app.log("Drawing Player", "Draw at X: " + (body.getPosition().x - divW) + ", Y: " + (body.getPosition().y - divH)); // логи, отслеживают координаты игрока
     }
 
-    private void handleInput(float delta, Joystick joystick, boolean buttonShowIsActive) {
-        boolean playerHasStopMoving = true;
-        float x = body.getPosition().x;
-        float y = body.getPosition().y;
-
-        if (joystick.isActive()){
-            Vector2 position = joystick.getNorPositionStick();
-            direction = joystick.getDirection();
-
-            x += position.x * SPEED;
-            y += position.y * SPEED;
-
-            playerHasStopMoving = false;
-        }
-
-        if (playerHasStopMoving) {
-            direction = DIRECTION.NONE;
-            timerBeforeSleeping += delta;
-        } else {
-            timerBeforeSleeping = 0;
-        }
-
-        if (!buttonShowIsActive && isAppearance) isAppearance = false;
-        else if (buttonShowIsActive) isAppearance = true;
-
-        body.setTransform(x, y, body.getAngle());
-    }
-
     private TextureRegion getCurrentFrame() {
         // 1. Проверка анимации сна (самый высокий приоритет).
-        if (shouldPlaySleepAnimation()) {
+        if (shouldPlaySleepAnimation() && !hasScares) {
             return getSleepAnimationFrame();
         }
 
         // 2. Проверка анимации засыпания
-        if (shouldPlayOnSleepingAnimation()) {
+        if (shouldPlayOnSleepingAnimation() && !hasScares) {
             return getOnSleepingAnimationFrame();
+        }
+
+        // 3. Проверка анимации смеха после "пугания"
+        if (shouldPlayLaughAnimation()){
+            return getLaughAnimationFrame();
         }
 
         // 3. Обработка движения/испуга
@@ -234,7 +242,7 @@ public class Player {
 
     private boolean shouldPlaySleepAnimation() {
         return timerBeforeSleeping >= TRANSITION_TO_SLEEP +
-            onSleepingAnimation.getFrameDuration();
+            onSleepingAnimation.getAnimationDuration();
     }
 
     private TextureRegion getSleepAnimationFrame() {
@@ -258,10 +266,15 @@ public class Player {
     }
 
     private Animation<TextureRegion> getBaseAnimation() {
-        if (!hasScares) {
-            return getRunAnimation();
+        if (hasScares && shouldPlayScareAnimation()) {
+            return getScareAnimation();
         }
-        return getScareAnimation();
+
+        return getRunAnimation();
+    }
+
+    private boolean shouldPlayScareAnimation() {
+        return stateTimeForFunnyScareAnimation < TIME_FOR_SCARE;
     }
 
     private Animation<TextureRegion> getScareAnimation() {
@@ -270,6 +283,14 @@ public class Player {
             case DOWN: return funnyScareAnimationDown;
             default: return funnyScareAnimationLeft;
         }
+    }
+
+    private boolean shouldPlayLaughAnimation() {
+        return !shouldPlayScareAnimation() && stateTimeForLaughAnimation < TIME_FOR_LAUGH;
+    }
+
+    private TextureRegion getLaughAnimationFrame() {
+        return laughAnimation.getKeyFrame(stateTimeForLaughAnimation, true);
     }
 
     private void handleDirectionFlipping(TextureRegion frame) {
