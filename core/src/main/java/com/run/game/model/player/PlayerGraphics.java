@@ -1,4 +1,4 @@
-package com.run.game.model;
+package com.run.game.model.player;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,19 +6,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.run.game.model.ui.Joystick;
+import com.run.game.model.DIRECTION;
 import com.run.game.screen.MainScreen;
 
 import java.util.Arrays;
 
-public class Player {
+public class PlayerGraphics {
 
-    public static final float SPEED = MainScreen.PPM / 5 * MainScreen.UNIT_SCALE;
     public static final float TRANSITION_TO_SLEEP = 15f;
     public static final float TIME_FOR_SCARE = 2f;
     public static final float TIME_FOR_LAUGH = 2f;
@@ -35,6 +29,7 @@ public class Player {
 
     private final Animation<TextureRegion> sleepAnimation;
     private float stateTimeForSleepingAnimation;
+    private float timerBeforeSleeping;
 
     private final Animation<TextureRegion> readyToScareLeft;
     private final Animation<TextureRegion> readyToScareDown;
@@ -44,35 +39,19 @@ public class Player {
     private final Animation<TextureRegion> funnyScareAnimationUp;
     private final Animation<TextureRegion> funnyScareAnimationDown;
     private float stateTimeForFunnyScareAnimation;
-    private boolean hasScares = false;
 
     private final Animation<TextureRegion> laughAnimation;
     private float stateTimeForLaughAnimation;
 
-    private float timerBeforeSleeping;
-
-    private final Body body;
-
-    private final float width, height;
-
     private DIRECTION direction = DIRECTION.NONE;
+
+    private boolean hasScares = false;
 
     private boolean isAppearance = false;
 
     private float transparency = 0.2f;
 
-    public Player(float x, float y, float wight, float height, World world) {
-        body = createBody(
-            x * MainScreen.UNIT_SCALE,
-            y * MainScreen.UNIT_SCALE,
-            wight * MainScreen.UNIT_SCALE,
-            height * MainScreen.UNIT_SCALE,
-            world
-        );
-
-        this.width = wight;
-        this.height = height;
-
+    public PlayerGraphics() {
         runAnimation = new Animation<>(0.5f,
             new TextureRegion(new Texture("ghost_texture/run/Ghost_run1.png")),
             new TextureRegion(new Texture("ghost_texture/run/Ghost_run2.png"))
@@ -133,49 +112,9 @@ public class Player {
         );
     }
 
-    public void update(float deltaTime, Joystick joystick, boolean buttonShowIsActive, boolean buttonScareIsActive) {
-        if (!hasScares) handleInput(deltaTime, joystick, buttonShowIsActive);
-
-        if (buttonScareIsActive && shouldPlayScareAnimation() && isAppearance && !shouldPlayLaughAnimation()){
-            hasScares = true;
-            stateTimeForFunnyScareAnimation += deltaTime;
-
-        } else if (shouldPlayLaughAnimation()){
-            stateTimeForLaughAnimation += deltaTime;
-
-        } else {
-            stateTimeForLaughAnimation = 0;
-            hasScares = false;
-            stateTimeForFunnyScareAnimation = 0;
-        }
-
-        if (shouldPlaySleepAnimation()) {
-            stateTimeForSleepingAnimation += deltaTime;
-
-        } else if (shouldPlayOnSleepingAnimation()) {
-            stateTimeForOnSleepingAnimation += deltaTime;
-
-        } else {
-            stateTimeForRunAnimations += deltaTime;
-            stateTimeForSleepingAnimation = 0;
-            stateTimeForOnSleepingAnimation = 0;
-        }
-    }
-
-    private void handleInput(float delta, Joystick joystick, boolean buttonShowIsActive) {
-        boolean playerHasStopMoving = true;
-        float x = body.getPosition().x;
-        float y = body.getPosition().y;
-
-        if (joystick.isActive()){
-            Vector2 position = joystick.getNorPositionStick();
-            direction = joystick.getDirection();
-
-            x += position.x * SPEED;
-            y += position.y * SPEED;
-
-            playerHasStopMoving = false;
-        }
+    public void update(float delta, boolean buttonShowIsActive, boolean buttonScareIsActive, boolean playerHasStopMoving) {
+        if (!buttonShowIsActive && isAppearance && !hasScares) isAppearance = false;
+        else if (buttonShowIsActive) isAppearance = true;
 
         if (playerHasStopMoving) {
             timerBeforeSleeping += delta;
@@ -183,13 +122,42 @@ public class Player {
             timerBeforeSleeping = 0;
         }
 
-        if (!buttonShowIsActive && isAppearance) isAppearance = false;
-        else if (buttonShowIsActive) isAppearance = true;
+        checkOnScare(delta, buttonScareIsActive);
 
-        body.setTransform(x, y, body.getAngle());
+        checkOnSleep(delta);
     }
 
-    public void draw(Batch batch, float parentAlpha) {
+    private void checkOnScare(float delta, boolean buttonScareIsActive){
+        if (buttonScareIsActive && shouldPlayScareAnimation() && isAppearance && !shouldPlayLaughAnimation()){
+            hasScares = true;
+            stateTimeForFunnyScareAnimation += delta;
+
+        } else if (shouldPlayLaughAnimation()){
+            hasScares = false;
+            stateTimeForLaughAnimation += delta;
+
+        } else {
+            hasScares = false;
+            stateTimeForLaughAnimation = 0;
+            stateTimeForFunnyScareAnimation = 0;
+        }
+    }
+
+    private void checkOnSleep(float delta){
+        if (shouldPlaySleepAnimation()) {
+            stateTimeForSleepingAnimation += delta;
+
+        } else if (shouldPlayOnSleepingAnimation()) {
+            stateTimeForOnSleepingAnimation += delta;
+
+        } else {
+            stateTimeForRunAnimations += delta;
+            stateTimeForSleepingAnimation = 0;
+            stateTimeForOnSleepingAnimation = 0;
+        }
+    }
+
+    public void draw(Batch batch, float parentAlpha, Vector2 position, float width, float height) {
         float divW = width * MainScreen.UNIT_SCALE;
         float divH = height * MainScreen.UNIT_SCALE;
 
@@ -207,15 +175,15 @@ public class Player {
 
         batch.draw(
             currentFrame,
-            body.getPosition().x - divW,
-            body.getPosition().y - divH,
+            position.x - divW,
+            position.y - divH,
             width * MainScreen.UNIT_SCALE * 2,
             height * MainScreen.UNIT_SCALE * 2
         );
 
         batch.setColor(Color.WHITE);
 
-//        Gdx.app.log("Drawing Player", "Draw at X: " + (body.getPosition().x - divW) + ", Y: " + (body.getPosition().y - divH)); // логи, отслеживают координаты игрока
+//        Gdx.app.log("Drawing Player", "Draw at X: " + (x - divW) + ", Y: " + (y - divH)); // логи, отслеживают координаты игрока
     }
 
     private TextureRegion getCurrentFrame() {
@@ -310,37 +278,16 @@ public class Player {
         }
     }
 
-    private Body createBody(float x, float y, float wight, float height, World world) {
-        BodyDef def = new BodyDef();
-
-        def.type = BodyDef.BodyType.DynamicBody;
-        def.fixedRotation = true;
-        def.position.set(x, y);
-
-        Body body = world.createBody(def);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(wight / 2, height / 2);
-
-        Fixture fixture = body.createFixture(shape, 1f);
-        fixture.setUserData("player");
-        shape.dispose();
-
-        body.setBullet(true);
-
-        return body;
-    }
-
-    public Body getBody() {
-        return body;
+    public boolean isHasScares() {
+        return hasScares;
     }
 
     public boolean isAppearance() {
         return isAppearance;
     }
 
-    public boolean isHasScares() {
-        return hasScares;
+    public void setDirection(DIRECTION direction) {
+        this.direction = direction;
     }
 
     public void dispose() {

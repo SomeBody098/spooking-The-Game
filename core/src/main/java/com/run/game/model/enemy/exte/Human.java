@@ -1,9 +1,10 @@
-package com.run.game.model;
+package com.run.game.model.enemy.exte;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.run.game.model.enemy.Enemy;
 import com.run.game.screen.MainScreen;
 
 public class Human extends Enemy {

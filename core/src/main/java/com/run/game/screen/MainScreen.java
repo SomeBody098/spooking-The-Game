@@ -12,11 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.model.Brick;
-import com.run.game.model.Human;
+import com.run.game.model.enemy.exte.Human;
+import com.run.game.model.player.PlayerGraphics;
 import com.run.game.model.ui.ButtonScare;
 import com.run.game.model.ui.ButtonShow;
 import com.run.game.model.ui.Joystick;
-import com.run.game.model.Player;
+import com.run.game.model.player.Player;
 
 public class MainScreen implements Screen {
 
@@ -127,7 +128,7 @@ public class MainScreen implements Screen {
             buttonScareMargin + buttonShow.getHeight(),
             buttonSize,
             buttonSize,
-            Player.TIME_FOR_SCARE + Player.TIME_FOR_LAUGH
+            PlayerGraphics.TIME_FOR_SCARE + PlayerGraphics.TIME_FOR_LAUGH
         );
 
         stage = new Stage(new ScreenViewport(uiCamera), uiBatch);
@@ -171,14 +172,14 @@ public class MainScreen implements Screen {
         gameCamera.update();
         uiCamera.update();
         player.update(delta, joystick, buttonShow.isActive(), buttonScare.isAbilityActive());
-        human.update(world, player.getBody().getPosition(), delta, player.isAppearance());
+        human.update(world, player.getPosition(), delta, player.isAppearance());
 
         // ui
 
         buttonScare.canActive(player.isAppearance());
 
-//        gameCamera.position.x = player.getBody().getPosition().x;
-//        gameCamera.position.y = player.getBody().getPosition().y;
+//        gameCamera.position.x = player.getPosition().x;
+//        gameCamera.position.y = player.getPosition().y;
     }
 
     @Override

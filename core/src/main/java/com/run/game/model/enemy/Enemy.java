@@ -1,4 +1,4 @@
-package com.run.game.model;
+package com.run.game.model.enemy;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool;
+import com.run.game.model.DIRECTION;
 import com.run.game.screen.MainScreen;
 
 public abstract class Enemy {
