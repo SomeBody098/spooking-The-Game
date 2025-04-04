@@ -9,25 +9,28 @@ import com.run.game.screen.MainScreen;
 
 public class Human extends Enemy {
 
+    public static final float VIEW_DISTANCE = 20;
+    public static final float ANGLE_OF_VIEW = 70f;
+
     private final Texture currentFrame;
 
     public Human(float x, float y, float width, float height, World world) { // TODO: 30.03.2025 нарисуй ему текстуру и напиши логику "убегания" от игрока
-        super(x, y, width, height, world);
+        super(x, y, width, height, ANGLE_OF_VIEW, VIEW_DISTANCE, world);
 
         currentFrame = new Texture("enemy_texture/enemy.png");
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        float divW = width * MainScreen.UNIT_SCALE;
-        float divH = height * MainScreen.UNIT_SCALE;
+        float divW = getWidth() * MainScreen.UNIT_SCALE;
+        float divH = getHeight() * MainScreen.UNIT_SCALE;
 
         batch.draw(
             currentFrame,
-            body.getPosition().x - divW,
-            body.getPosition().y - divH,
-            width * MainScreen.UNIT_SCALE * 2,
-            height * MainScreen.UNIT_SCALE * 2
+            getPosition().x - divW,
+            getPosition().y - divH,
+            getWidth() * MainScreen.UNIT_SCALE * 2,
+            getHeight() * MainScreen.UNIT_SCALE * 2
         );
     }
 
@@ -36,7 +39,7 @@ public class Human extends Enemy {
         super.update(world, playerPosition, delta, isAppearance);
 
         if (super.isHasSeesPlayer()){
-            body.setLinearVelocity(10, 10);
+            getBody().setLinearVelocity(10, 10);
         }
     }
 
