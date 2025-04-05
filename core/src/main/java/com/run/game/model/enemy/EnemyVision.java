@@ -17,12 +17,7 @@ public class EnemyVision implements RayCastCallback {
 
     private boolean hasSeesPlayer = false;
 
-    private final Pool<Vector2> vectorPool = new Pool<Vector2>() {
-        @Override
-        protected Vector2 newObject() {
-            return new Vector2();
-        }
-    };
+    private final Pool<Vector2> vectorPool;
 
 //    private final ShapeRenderer shapeRenderer;
 
@@ -30,6 +25,13 @@ public class EnemyVision implements RayCastCallback {
     public EnemyVision(float angleOfView, float viewDistance) {
         this.angleOfView = angleOfView;
         this.viewDistance = MainScreen.PPM * MainScreen.UNIT_SCALE * viewDistance;
+
+        vectorPool = new Pool<Vector2>() {
+            @Override
+            protected Vector2 newObject() {
+                return new Vector2();
+            }
+        };
 
 //        shapeRenderer = new ShapeRenderer();
     }

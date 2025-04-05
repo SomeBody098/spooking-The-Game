@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Pool;
 import com.run.game.model.DIRECTION;
 
 public class Joystick extends Actor implements InputProcessor{
@@ -15,7 +16,7 @@ public class Joystick extends Actor implements InputProcessor{
 
     private final Vector2 positionCircle;
     private final Vector2 positionStick;
-    private final Vector2 tempPosition; // рассходник
+    private final Pool<Vector2> vectorPool;
 
     private final float radius;
 
@@ -32,7 +33,12 @@ public class Joystick extends Actor implements InputProcessor{
 
         positionCircle = new Vector2(x, y);
         positionStick = new Vector2(x, y);
-        tempPosition = new Vector2();
+        vectorPool = new Pool<Vector2>() {
+            @Override
+            protected Vector2 newObject() {
+                return new Vector2();
+            }
+        };
     }
 
     @Override
@@ -106,13 +112,16 @@ public class Joystick extends Actor implements InputProcessor{
         if (pointer == Joystick.this.pointer && isActive) {
             screenY = Gdx.graphics.getHeight() - screenY;
 
-            // Ограничиваем движение стика радиусом джойстика
-            tempPosition.set(screenX - positionCircle.x, screenY - positionCircle.y);
+            Vector2 tempPosition = vectorPool.obtain();
+            tempPosition.set(screenX - positionCircle.x, screenY - positionCircle.y); // Ограничиваем движение стика радиусом джойстика
+
             if (tempPosition.len() > radius) {
                 tempPosition.nor().scl(radius);
             }
 
             positionStick.set(positionCircle).add(tempPosition);
+
+            vectorPool.free(tempPosition);
 
             return true;
         }
@@ -128,9 +137,15 @@ public class Joystick extends Actor implements InputProcessor{
     @Override public boolean scrolled(float amountX, float amountY) {return false;}
 
     private boolean isTouchInJoystickArea(float screenX, float screenY) {
-        // Проверяем, находится ли касание в зоне джойстика
+        Vector2 tempPosition = vectorPool.obtain();
         tempPosition.set(screenX, screenY);
-        return tempPosition.dst(positionCircle) <= radius;
+
+        // Проверяем, находится ли касание в зоне джойстика
+        boolean isTouchInJoystickArea = tempPosition.dst(positionCircle) <= radius;
+
+        vectorPool.free(tempPosition);
+
+        return isTouchInJoystickArea;
     }
 
     private void resetJoystick() {
@@ -139,7 +154,24 @@ public class Joystick extends Actor implements InputProcessor{
         pointer = -1;
     }
 
-    public Vector2 getNorPositionStick() {
+    public float getNorPositionStickX(){
+        Vector2 tempPosition = getNorPositionStick();
+        float x = tempPosition.x;
+        vectorPool.free(tempPosition);
+
+        return x;
+    }
+
+    public float getNorPositionStickY(){
+        Vector2 tempPosition = getNorPositionStick();
+        float y = tempPosition.y;
+        vectorPool.free(tempPosition);
+
+        return y;
+    }
+
+    private Vector2 getNorPositionStick() {
+        Vector2 tempPosition = vectorPool.obtain();
         tempPosition.set(
             positionStick.x - positionCircle.x,
             positionStick.y - positionCircle.y
@@ -159,6 +191,7 @@ public class Joystick extends Actor implements InputProcessor{
     public void dispose(){
         circleTexture.dispose();
         stickTexture.dispose();
+        vectorPool.clear();
     }
 
 }

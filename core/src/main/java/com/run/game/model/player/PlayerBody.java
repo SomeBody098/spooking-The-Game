@@ -40,11 +40,12 @@ public class PlayerBody {
         float y = body.getPosition().y;
 
         if (joystick.isActive()){
-            Vector2 position = joystick.getNorPositionStick();
+            float joystickX = joystick.getNorPositionStickX();
+            float joystickY = joystick.getNorPositionStickY();
             direction = joystick.getDirection();
 
-            x += position.x * SPEED;
-            y += position.y * SPEED;
+            x += joystickX * SPEED;
+            y += joystickY * SPEED;
 
             isPlayerHasStopMoving = false;
         } else {
