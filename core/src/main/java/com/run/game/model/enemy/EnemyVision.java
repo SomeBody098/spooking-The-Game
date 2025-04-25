@@ -1,14 +1,14 @@
 package com.run.game.model.enemy;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool;
+import com.run.game.Main;
 import com.run.game.model.DIRECTION;
-import com.run.game.screen.MainScreen;
+import com.run.game.screen.GameScreen;
 
 public class EnemyVision implements RayCastCallback {
 
@@ -24,7 +24,7 @@ public class EnemyVision implements RayCastCallback {
 
     public EnemyVision(float angleOfView, float viewDistance) {
         this.angleOfView = angleOfView;
-        this.viewDistance = MainScreen.PPM * MainScreen.UNIT_SCALE * viewDistance;
+        this.viewDistance = Main.PPM * Main.UNIT_SCALE * viewDistance;
 
         vectorPool = new Pool<Vector2>() {
             @Override

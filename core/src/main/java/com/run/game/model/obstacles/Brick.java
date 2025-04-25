@@ -1,4 +1,4 @@
-package com.run.game.model;
+package com.run.game.model.obstacles;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -7,7 +7,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.run.game.screen.MainScreen;
+import com.run.game.Main;
+import com.run.game.screen.GameScreen;
 
 public class Brick {
 
@@ -21,10 +22,10 @@ public class Brick {
         texture = new Texture("obstacles/brick.png");
 
         body = createBody(
-            x * MainScreen.UNIT_SCALE,
-            y * MainScreen.UNIT_SCALE,
-            wight * MainScreen.UNIT_SCALE,
-            height * MainScreen.UNIT_SCALE,
+            x * Main.UNIT_SCALE,
+            y * Main.UNIT_SCALE,
+            wight * Main.UNIT_SCALE,
+            height * Main.UNIT_SCALE,
             world
         );
 
@@ -33,15 +34,15 @@ public class Brick {
     }
 
     public void draw(Batch batch) {
-        float divW = width * MainScreen.UNIT_SCALE;
-        float divH = height * MainScreen.UNIT_SCALE;
+        float divW = width * Main.UNIT_SCALE;
+        float divH = height * Main.UNIT_SCALE;
 
         batch.draw(
             texture,
             body.getPosition().x - divW,
             body.getPosition().y - divH,
-            width * MainScreen.UNIT_SCALE * 2,
-            height * MainScreen.UNIT_SCALE * 2
+            width * Main.UNIT_SCALE * 2,
+            height * Main.UNIT_SCALE * 2
         );
     }
 

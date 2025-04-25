@@ -5,8 +5,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.run.game.Main;
 import com.run.game.model.DIRECTION;
-import com.run.game.screen.MainScreen;
+import com.run.game.screen.GameScreen;
 
 public class EnemyBody {
 
@@ -18,10 +19,10 @@ public class EnemyBody {
 
     public EnemyBody(float x, float y, float width, float height, World world) {
         body = createBody(
-            x * MainScreen.UNIT_SCALE,
-            y * MainScreen.UNIT_SCALE,
-            width * MainScreen.UNIT_SCALE,
-            height * MainScreen.UNIT_SCALE,
+            x * Main.UNIT_SCALE,
+            y * Main.UNIT_SCALE,
+            width * Main.UNIT_SCALE,
+            height * Main.UNIT_SCALE,
             world
         );
 

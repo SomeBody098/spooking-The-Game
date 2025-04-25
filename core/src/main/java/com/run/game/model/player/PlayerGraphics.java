@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.run.game.Main;
 import com.run.game.model.DIRECTION;
-import com.run.game.screen.MainScreen;
+import com.run.game.screen.GameScreen;
 
 import java.util.Arrays;
 
@@ -158,8 +159,8 @@ public class PlayerGraphics {
     }
 
     public void draw(Batch batch, float parentAlpha, Vector2 position, float width, float height) {
-        float divW = width * MainScreen.UNIT_SCALE;
-        float divH = height * MainScreen.UNIT_SCALE;
+        float divW = width * Main.UNIT_SCALE;
+        float divH = height * Main.UNIT_SCALE;
 
         TextureRegion currentFrame = getCurrentFrame();
 
@@ -177,8 +178,8 @@ public class PlayerGraphics {
             currentFrame,
             position.x - divW,
             position.y - divH,
-            width * MainScreen.UNIT_SCALE * 2,
-            height * MainScreen.UNIT_SCALE * 2
+            width * Main.UNIT_SCALE * 2,
+            height * Main.UNIT_SCALE * 2
         );
 
         batch.setColor(Color.WHITE);

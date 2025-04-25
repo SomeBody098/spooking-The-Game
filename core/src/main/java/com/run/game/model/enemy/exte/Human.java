@@ -4,8 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.run.game.Main;
 import com.run.game.model.enemy.Enemy;
-import com.run.game.screen.MainScreen;
+import com.run.game.screen.GameScreen;
 
 public class Human extends Enemy {
 
@@ -22,15 +23,15 @@ public class Human extends Enemy {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        float divW = getWidth() * MainScreen.UNIT_SCALE;
-        float divH = getHeight() * MainScreen.UNIT_SCALE;
+        float divW = getWidth() * Main.UNIT_SCALE;
+        float divH = getHeight() * Main.UNIT_SCALE;
 
         batch.draw(
             currentFrame,
             getPosition().x - divW,
             getPosition().y - divH,
-            getWidth() * MainScreen.UNIT_SCALE * 2,
-            getHeight() * MainScreen.UNIT_SCALE * 2
+            getWidth() * Main.UNIT_SCALE * 2,
+            getHeight() * Main.UNIT_SCALE * 2
         );
     }
 

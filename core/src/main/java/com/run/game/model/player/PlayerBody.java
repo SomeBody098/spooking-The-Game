@@ -6,13 +6,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.run.game.Main;
 import com.run.game.model.DIRECTION;
 import com.run.game.model.ui.Joystick;
-import com.run.game.screen.MainScreen;
+import com.run.game.screen.GameScreen;
 
 public class PlayerBody {
 
-    public static final float SPEED = MainScreen.PPM / 5 * MainScreen.UNIT_SCALE;
+    public static final float SPEED = Main.PPM / 5 * Main.UNIT_SCALE;
 
     private final Body body;
 
@@ -24,10 +25,10 @@ public class PlayerBody {
 
     public PlayerBody(float x, float y, float wight, float height, World world) {
         body = createBody(
-            x * MainScreen.UNIT_SCALE,
-            y * MainScreen.UNIT_SCALE,
-            wight * MainScreen.UNIT_SCALE,
-            height * MainScreen.UNIT_SCALE,
+            x * Main.UNIT_SCALE,
+            y * Main.UNIT_SCALE,
+            wight * Main.UNIT_SCALE,
+            height * Main.UNIT_SCALE,
             world
         );
 
