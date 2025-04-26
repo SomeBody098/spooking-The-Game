@@ -13,7 +13,7 @@ import com.run.game.screen.GameScreen;
 
 public class PlayerBody {
 
-    public static final float SPEED = Main.PPM / 5 * Main.UNIT_SCALE;
+    public static final float SPEED = 6 * Main.UNIT_SCALE;
 
     private final Body body;
 
