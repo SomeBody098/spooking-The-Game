@@ -6,6 +6,9 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -42,7 +45,7 @@ public class GameScreen implements Screen {
 
     private final Human human;
 
-    private final Array<Brick> bricks;
+    private final OrthogonalTiledMapRenderer renderer;
 
     private final Box2DDebugRenderer box2DDebugRenderer;
 
@@ -55,37 +58,24 @@ public class GameScreen implements Screen {
         this.world = world;
 
         player = new Player(
-            gameCamera.position.x * Main.PPM,
-            gameCamera.position.y * Main.PPM,
-            Main.PPM * 2,
-            Main.PPM * 2,
+            5,
+            5,
+            Main.PPM,
+            Main.PPM,
             world
         );
 
         human = new Human(
-            gameCamera.position.x * Main.PPM,
-            gameCamera.position.y * Main.PPM,
-            Main.PPM * 2,
-            Main.PPM * 2,
+            8,
+            5,
+            Main.PPM,
+            Main.PPM,
             world
         );
 
-        bricks = new Array<>();
-
-        for (int i = 0; i <= gameCamera.viewportHeight; i++) {
-            for (int j = 0; j <= gameCamera.viewportWidth; j++) {
-                if (i == 0 || i == gameCamera.viewportHeight ||
-                    j == 0 || j == (int) gameCamera.viewportWidth) {
-
-                    bricks.add(new Brick(
-                        gameCamera.position.x + j * Main.PPM,
-                        gameCamera.position.y + i * Main.PPM,
-                        Main.PPM, Main.PPM,
-                        world
-                    ));
-                }
-            }
-        }
+        TiledMap map = new TmxMapLoader().load("tileset/graveyard/firstlevel/firstLevel.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, Main.UNIT_SCALE);        // TODO: 30.04.2025  определи как отрисовывать карту правильно
+        renderer.setView(gameCamera);
 
         // ui components
 
@@ -141,9 +131,9 @@ public class GameScreen implements Screen {
         gameBatch.setProjectionMatrix(gameCamera.combined);
         gameBatch.begin();
 
+        renderer.render();
         player.draw(gameBatch, 0.02f);
         human.draw(gameBatch, 1f);
-        for (Brick brick: bricks) brick.draw(gameBatch);
 
         gameBatch.end();
 
@@ -202,7 +192,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         human.dispose();
         player.dispose();
-        for (Brick brick: bricks) brick.dispose();
+        renderer.dispose();
         joystick.dispose();
         stage.dispose();
     }

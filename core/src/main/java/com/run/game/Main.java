@@ -34,15 +34,8 @@ public class Main extends Game {
         batch = new SpriteBatch();
         uiBatch = new SpriteBatch();
 
-        uiBatch = new SpriteBatch();
-
         float aspectRatio = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        gameCamera = new OrthographicCamera(PPM * aspectRatio, PPM);
-        gameCamera.position.set(
-            PPM * aspectRatio / 2,
-            PPM / 2,
-            0
-        );
+        gameCamera = new OrthographicCamera(PPM * aspectRatio, PPM);        // TODO: 30.04.2025 определи нужные размеры камеры для карты
 
         uiCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiCamera.position.set(
