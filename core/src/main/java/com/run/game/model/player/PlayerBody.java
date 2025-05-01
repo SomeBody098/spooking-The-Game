@@ -13,7 +13,7 @@ import com.run.game.screen.GameScreen;
 
 public class PlayerBody {
 
-    public static final float SPEED = 6 * Main.UNIT_SCALE;
+    public static final float SPEED = Main.UNIT_SCALE;
 
     private final Body body;
 
@@ -25,8 +25,8 @@ public class PlayerBody {
 
     public PlayerBody(float x, float y, float wight, float height, World world) {
         body = createBody(
-            x * Main.UNIT_SCALE,
-            y * Main.UNIT_SCALE,
+            x,
+            y,
             wight * Main.UNIT_SCALE,
             height * Main.UNIT_SCALE,
             world

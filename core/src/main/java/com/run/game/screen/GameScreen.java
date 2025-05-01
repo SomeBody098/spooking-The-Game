@@ -58,23 +58,23 @@ public class GameScreen implements Screen {
         this.world = world;
 
         player = new Player(
-            5,
-            5,
-            Main.PPM,
-            Main.PPM,
+            gameCamera.viewportWidth / 2,
+            gameCamera.viewportHeight / 2,
+            Main.PPM / 2,
+            Main.PPM / 2,
             world
         );
 
         human = new Human(
-            8,
-            5,
-            Main.PPM,
-            Main.PPM,
+            1,
+            1,
+            Main.PPM / 2,
+            Main.PPM / 2,
             world
         );
 
         TiledMap map = new TmxMapLoader().load("tileset/graveyard/firstlevel/firstLevel.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, Main.UNIT_SCALE);        // TODO: 30.04.2025  определи как отрисовывать карту правильно
+        renderer = new OrthogonalTiledMapRenderer(map, Main.UNIT_SCALE);
         renderer.setView(gameCamera);
 
         // ui components
@@ -126,8 +126,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        box2DDebugRenderer.render(world, gameCamera.combined);
-
         gameBatch.setProjectionMatrix(gameCamera.combined);
         gameBatch.begin();
 
@@ -136,6 +134,8 @@ public class GameScreen implements Screen {
         human.draw(gameBatch, 1f);
 
         gameBatch.end();
+
+        box2DDebugRenderer.render(world, gameCamera.combined);
 
         // рисуем gui
         uiBatch.setProjectionMatrix(uiCamera.combined);

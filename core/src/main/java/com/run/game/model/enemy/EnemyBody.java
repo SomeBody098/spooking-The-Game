@@ -19,8 +19,8 @@ public class EnemyBody {
 
     public EnemyBody(float x, float y, float width, float height, World world) {
         body = createBody(
-            x * Main.UNIT_SCALE,
-            y * Main.UNIT_SCALE,
+            x,
+            y,
             width * Main.UNIT_SCALE,
             height * Main.UNIT_SCALE,
             world

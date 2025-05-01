@@ -50,6 +50,8 @@ public class PlayerGraphics {
 
     private boolean isAppearance = false;
 
+    private boolean hasMoved = false;
+
     private float transparency = 0.2f;
 
     public PlayerGraphics() {
@@ -119,8 +121,10 @@ public class PlayerGraphics {
 
         if (playerHasStopMoving) {
             timerBeforeSleeping += delta;
+            hasMoved = false;
         } else {
             timerBeforeSleeping = 0;
+            hasMoved = true;
         }
 
         checkOnScare(delta, buttonScareIsActive);
@@ -134,7 +138,6 @@ public class PlayerGraphics {
             stateTimeForFunnyScareAnimation += delta;
 
         } else if (shouldPlayLaughAnimation()){
-            hasScares = false;
             stateTimeForLaughAnimation += delta;
 
         } else {
@@ -255,7 +258,7 @@ public class PlayerGraphics {
     }
 
     private boolean shouldPlayLaughAnimation() {
-        return !shouldPlayScareAnimation() && stateTimeForLaughAnimation < TIME_FOR_LAUGH;
+        return !shouldPlayScareAnimation() && stateTimeForLaughAnimation < TIME_FOR_LAUGH && !hasMoved;
     }
 
     private TextureRegion getLaughAnimationFrame() {

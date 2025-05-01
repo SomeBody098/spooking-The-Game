@@ -16,8 +16,15 @@ import java.util.Map;
 
 public class Main extends Game {
 
-    public static final float PPM = 32;
-    public static final float UNIT_SCALE = 1f / PPM;
+
+    public static final float PPM = 32; // 32 пикселя = 1 метр в Box2D
+    public static final float UNIT_SCALE = 1f / PPM; // Масштаб для TiledMap
+    public static final int MAP_WIDTH_TILES = 10; // Ширина карты в тайлах
+    public static final int MAP_HEIGHT_TILES = 10; // Высота карты в тайлах
+    public static final float MAP_WIDTH_PIXELS = MAP_WIDTH_TILES * 32; // 320 пикселей
+    public static final float MAP_HEIGHT_PIXELS = MAP_HEIGHT_TILES * 32; // 320 пикселей
+    public static final float MAP_WIDTH_METERS = MAP_WIDTH_PIXELS / PPM; // 10 метров
+    public static final float MAP_HEIGHT_METERS = MAP_HEIGHT_PIXELS / PPM; // 10 метров
 
     private SpriteBatch batch;
     private SpriteBatch uiBatch;
@@ -34,8 +41,13 @@ public class Main extends Game {
         batch = new SpriteBatch();
         uiBatch = new SpriteBatch();
 
-        float aspectRatio = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-        gameCamera = new OrthographicCamera(PPM * aspectRatio, PPM);        // TODO: 30.04.2025 определи нужные размеры камеры для карты
+        gameCamera = new OrthographicCamera(10, 10);
+        gameCamera.position.set(
+            MAP_WIDTH_METERS / 2,
+            MAP_HEIGHT_METERS / 2,
+            0
+        );
+        gameCamera.update();
 
         uiCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiCamera.position.set(
@@ -43,6 +55,7 @@ public class Main extends Game {
             (float) Gdx.graphics.getHeight() / 2,
             0
         );
+        uiCamera.update();
 
         world = new World(new Vector2(), false);
 

@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class Human extends Enemy {
 
-    public static final float SPEED = 3 * Main.UNIT_SCALE;
+    public static final float SPEED = Main.UNIT_SCALE;
 
     public static final float VIEW_DISTANCE = 20f;
     public static final float ANGLE_OF_VIEW = 70f;
