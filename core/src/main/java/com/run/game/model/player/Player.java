@@ -18,6 +18,7 @@ public class Player {
 
     public void update(float deltaTime, Joystick joystick, boolean buttonShowIsActive, boolean buttonScareIsActive) {
         if (!playerGraphics.isHasScares()) playerBody.handleInput(joystick);
+        playerBody.setIntangible(!playerGraphics.isAppearance());       // TODO: 02.05.2025 сделай так, чтобы когда призрак невидим, то не сталкивался с врагами, но стеы чтоб проходить не мог! 
 
         playerGraphics.setDirection(playerBody.getDirection());
         playerGraphics.update(deltaTime, buttonShowIsActive, buttonScareIsActive, playerBody.isPlayerHasStopMoving());

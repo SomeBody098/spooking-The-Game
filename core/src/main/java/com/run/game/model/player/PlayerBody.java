@@ -23,10 +23,11 @@ public class PlayerBody {
 
     private boolean isPlayerHasStopMoving = false;
 
+    private boolean hasIntangible = true;
+
     public PlayerBody(float x, float y, float wight, float height, World world) {
         body = createBody(
-            x,
-            y,
+            x, y,
             wight * Main.UNIT_SCALE,
             height * Main.UNIT_SCALE,
             world
@@ -66,15 +67,22 @@ public class PlayerBody {
         Body body = world.createBody(def);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(wight / 2, height / 2);
+        shape.setAsBox(wight / 4, height / 4); // FIXME: 02.05.2025 возможные проблемы из-за деления на 4, (лучше будет на 2) я сделал так для уменшения коллизии игрока
 
         Fixture fixture = body.createFixture(shape, 1f);
         fixture.setUserData("player");
+        fixture.setSensor(hasIntangible);
         shape.dispose();
 
         body.setBullet(true);
 
         return body;
+    }
+
+    public void setIntangible(boolean intangible){
+        hasIntangible = intangible;
+
+        body.getFixtureList().get(0).setSensor(intangible);   // FIXME: 02.05.2025 несовсем верная логика, проходит сквозь стены
     }
 
     public Vector2 getPosition(){

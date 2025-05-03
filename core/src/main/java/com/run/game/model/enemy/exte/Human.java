@@ -3,6 +3,7 @@ package com.run.game.model.enemy.exte;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
@@ -19,7 +20,7 @@ public class Human extends Enemy {
     public static final float VIEW_DISTANCE = 20f;
     public static final float ANGLE_OF_VIEW = 70f;
 
-    private final Texture currentFrame;
+    private final TextureRegion texture;
 
     private final Random random;
 
@@ -34,20 +35,22 @@ public class Human extends Enemy {
 
         random = new Random();
 
-        currentFrame = new Texture("enemy_texture/enemy.png");
+        texture = new TextureRegion(new Texture("enemy_texture/enemy.png"));
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        float divW = enemyBody.getWidth() * Main.UNIT_SCALE;
-        float divH = enemyBody.getHeight() * Main.UNIT_SCALE;
+        TextureRegion currentFrame = texture;
+
+        float divW = (float) (currentFrame.getRegionWidth() / 2) * Main.UNIT_SCALE;
+        float divH = (float) (currentFrame.getRegionHeight() / 2) * Main.UNIT_SCALE;
 
         batch.draw(
             currentFrame,
             enemyBody.getBody().getPosition().x - divW,
             enemyBody.getBody().getPosition().y - divH,
-            enemyBody.getWidth() * Main.UNIT_SCALE * 2,
-            enemyBody.getHeight() * Main.UNIT_SCALE * 2
+            enemyBody.getWidth() / Main.PPM,
+            enemyBody.getHeight() / Main.PPM
         );
     }
 
@@ -120,8 +123,6 @@ public class Human extends Enemy {
 
             timePatrol -= delta;
         }
-
-        Gdx.app.log("enemy position", enemyBody.getBody().getPosition() + "");
     }
 
     @Override

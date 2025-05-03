@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.screen.SCREEN_TYPE;
 import com.run.game.screen.ScreenFactory;
 
@@ -15,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main extends Game {
-
 
     public static final float PPM = 32; // 32 пикселя = 1 метр в Box2D
     public static final float UNIT_SCALE = 1f / PPM; // Масштаб для TiledMap
@@ -27,10 +28,12 @@ public class Main extends Game {
     public static final float MAP_HEIGHT_METERS = MAP_HEIGHT_PIXELS / PPM; // 10 метров
 
     private SpriteBatch batch;
-    private SpriteBatch uiBatch;
 
     private OrthographicCamera gameCamera;
     private OrthographicCamera uiCamera;
+
+    private FitViewport gameViewport;
+    private ScreenViewport uiViewport;
 
     private World world;
 
@@ -39,7 +42,6 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        uiBatch = new SpriteBatch();
 
         gameCamera = new OrthographicCamera(10, 10);
         gameCamera.position.set(
@@ -56,6 +58,9 @@ public class Main extends Game {
             0
         );
         uiCamera.update();
+
+        gameViewport = new FitViewport(Main.MAP_WIDTH_METERS, Main.MAP_HEIGHT_METERS, gameCamera);
+        uiViewport = new ScreenViewport(uiCamera);
 
         world = new World(new Vector2(), false);
 
@@ -85,10 +90,6 @@ public class Main extends Game {
         return batch;
     }
 
-    public SpriteBatch getUiBatch() {
-        return uiBatch;
-    }
-
     public OrthographicCamera getGameCamera() {
         return gameCamera;
     }
@@ -101,11 +102,18 @@ public class Main extends Game {
         return world;
     }
 
+    public FitViewport getGameViewport() {
+        return gameViewport;
+    }
+
+    public ScreenViewport getUiViewport() {
+        return uiViewport;
+    }
+
     @Override
     public void dispose() {
         screen.dispose();
         batch.dispose();
-        uiBatch.dispose();
         world.dispose();
     }
 

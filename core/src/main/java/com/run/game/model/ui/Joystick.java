@@ -26,8 +26,8 @@ public class Joystick extends Actor implements InputProcessor{
     private boolean isActive = false;
 
     public Joystick(float x, float y, float radius) {
-        circleTexture = new Texture("virtualJoystickTexture/circle.png");
-        stickTexture = new Texture("virtualJoystickTexture/stick.png");
+        circleTexture = new Texture("ui/virtualJoystickTexture/circle.png");
+        stickTexture = new Texture("ui/virtualJoystickTexture/stick.png");
 
         this.radius = radius;
 

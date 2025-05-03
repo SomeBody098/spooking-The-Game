@@ -138,9 +138,12 @@ public class PlayerGraphics {
             stateTimeForFunnyScareAnimation += delta;
 
         } else if (shouldPlayLaughAnimation()){
+            hasScares = false;
             stateTimeForLaughAnimation += delta;
 
-        } else {
+        }
+
+        if (!buttonScareIsActive) {
             hasScares = false;
             stateTimeForLaughAnimation = 0;
             stateTimeForFunnyScareAnimation = 0;
@@ -162,10 +165,10 @@ public class PlayerGraphics {
     }
 
     public void draw(Batch batch, float parentAlpha, Vector2 position, float width, float height) {
-        float divW = width * Main.UNIT_SCALE;
-        float divH = height * Main.UNIT_SCALE;
-
         TextureRegion currentFrame = getCurrentFrame();
+
+        float divW = (float) (currentFrame.getRegionWidth() / 2) * Main.UNIT_SCALE;
+        float divH = (float) (currentFrame.getRegionHeight() / 2) * Main.UNIT_SCALE;
 
         if (isAppearance) {
             if (transparency >= 1) transparency = 1;
@@ -181,8 +184,8 @@ public class PlayerGraphics {
             currentFrame,
             position.x - divW,
             position.y - divH,
-            width * Main.UNIT_SCALE * 2,
-            height * Main.UNIT_SCALE * 2
+            width / Main.PPM,
+            height / Main.PPM
         );
 
         batch.setColor(Color.WHITE);

@@ -19,8 +19,7 @@ public class EnemyBody {
 
     public EnemyBody(float x, float y, float width, float height, World world) {
         body = createBody(
-            x,
-            y,
+            x, y,
             width * Main.UNIT_SCALE,
             height * Main.UNIT_SCALE,
             world
@@ -41,7 +40,7 @@ public class EnemyBody {
         Body body = world.createBody(def);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(wight, height);
+        shape.setAsBox(wight / 2, height / 2);
 
         Fixture fixture = body.createFixture(shape, 1f);
         fixture.setUserData("enemy");

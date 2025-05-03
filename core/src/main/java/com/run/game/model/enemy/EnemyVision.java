@@ -91,14 +91,12 @@ public class EnemyVision implements RayCastCallback {
             return -1; // Превышена дистанция
         }
 
-        if (fixture.getUserData() != null && fixture.getUserData().equals("brick")) {
-            hasSeesPlayer = false;
-            return 0; // Стена - прекращаем RayCast
-        }
-
         if (fixture.getUserData() != null && fixture.getUserData().equals("player")) {
             hasSeesPlayer = true;
             return fraction; // Игрок найден
+        } else if (fixture.getUserData() != null && !fixture.getUserData().equals("player")){
+            hasSeesPlayer = false;
+            return 0; // прекращаем RayCast
         }
 
         return -1; // Игнорировать другие объекты

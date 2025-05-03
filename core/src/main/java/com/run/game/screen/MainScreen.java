@@ -13,17 +13,20 @@ public class MainScreen implements Screen {
 
     private final Main main;
 
-    private final SpriteBatch uiBatch;
+    private final SpriteBatch batch;
 
     private final OrthographicCamera uiCamera;
+
+    private final ScreenViewport uiViewport;
 
     private final Stage stage;
     private final ButtonStart buttonStart;
 
-    public MainScreen(Main main, SpriteBatch uiBatch, OrthographicCamera uiCamera) {
+    public MainScreen(Main main, SpriteBatch batch, OrthographicCamera uiCamera, ScreenViewport uiViewport) {
         this.main = main;
-        this.uiBatch = uiBatch;
+        this.batch = batch;
         this.uiCamera = uiCamera;
+        this.uiViewport = uiViewport;
 
         float buttonSize = uiCamera.viewportHeight * 0.2f; // 10% от высоты
 
@@ -34,7 +37,7 @@ public class MainScreen implements Screen {
             buttonSize
         );
 
-        stage = new Stage(new ScreenViewport(uiCamera), uiBatch);
+        stage = new Stage(new ScreenViewport(uiCamera), batch);
 
         stage.addActor(buttonStart);
 
@@ -48,7 +51,7 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        uiBatch.setProjectionMatrix(uiCamera.combined);
+        batch.setProjectionMatrix(uiCamera.combined);
         stage.act(delta);
         stage.draw();
 
@@ -68,7 +71,7 @@ public class MainScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        uiViewport.update(width, height, true);
     }
 
     @Override
