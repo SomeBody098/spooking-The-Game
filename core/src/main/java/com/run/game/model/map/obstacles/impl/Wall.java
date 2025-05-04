@@ -1,4 +1,4 @@
-package com.run.game.model.obstacles.impl;
+package com.run.game.model.map.obstacles.impl;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -7,14 +7,14 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
-import com.run.game.model.obstacles.Obstacles;
+import com.run.game.model.map.obstacles.Obstacles;
 
-public class Barrel implements Obstacles {
+public class Wall implements Obstacles {
 
     private final Vector2 position;
     private final Body body;
 
-    public Barrel(float x, float y, float wight, float height, World world) {
+    public Wall(float x, float y, float wight, float height, World world) {
         position = new Vector2(x, y);
         body = createBody(
             x, y,
@@ -36,7 +36,7 @@ public class Barrel implements Obstacles {
         shape.setAsBox(wight / 2, height / 2);
 
         Fixture fixture = body.createFixture(shape, 0.0f);
-        fixture.setUserData("barrel");
+        fixture.setUserData("wall");
         shape.dispose();
 
         body.setTransform(x, y, 0);
@@ -56,6 +56,6 @@ public class Barrel implements Obstacles {
 
     @Override
     public String getNameObstacles() {
-        return "barrel";
+        return "wall";
     }
 }

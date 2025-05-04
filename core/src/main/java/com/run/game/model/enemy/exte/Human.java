@@ -68,10 +68,21 @@ public class Human extends Enemy {
     private void patrol(float delta){
         if (enemyBody.getDirection() == DIRECTION.NONE){
             switch (random.nextInt(4)){
-                case 0: enemyBody.setDirection(DIRECTION.RIGHT);
-                case 1: enemyBody.setDirection(DIRECTION.LEFT);
-                case 2: enemyBody.setDirection(DIRECTION.UP);
-                case 3: enemyBody.setDirection(DIRECTION.DOWN);
+                case 0:
+                    enemyBody.setDirection(DIRECTION.RIGHT);
+                    break;
+
+                case 1:
+                    enemyBody.setDirection(DIRECTION.LEFT);
+                    break;
+
+                case 2:
+                    enemyBody.setDirection(DIRECTION.UP);
+                    break;
+
+                case 3:
+                    enemyBody.setDirection(DIRECTION.DOWN);
+                    break;
             }
         }
 
