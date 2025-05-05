@@ -1,4 +1,4 @@
-package com.run.game.model.player;
+package com.run.game.model.characters.player;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

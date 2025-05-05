@@ -16,14 +16,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
-import com.run.game.model.enemy.exte.Human;
+import com.run.game.model.characters.enemys.exte.Human;
 import com.run.game.model.map.MapFactory;
 import com.run.game.model.map.Tile;
-import com.run.game.model.player.PlayerGraphics;
+import com.run.game.model.characters.player.PlayerGraphics;
 import com.run.game.model.ui.ButtonScare;
 import com.run.game.model.ui.ButtonShow;
 import com.run.game.model.ui.Joystick;
-import com.run.game.model.player.Player;
+import com.run.game.model.characters.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;

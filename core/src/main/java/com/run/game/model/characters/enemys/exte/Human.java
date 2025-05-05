@@ -1,4 +1,4 @@
-package com.run.game.model.enemy.exte;
+package com.run.game.model.characters.enemys.exte;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,8 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
 import com.run.game.model.DIRECTION;
-import com.run.game.model.enemy.Enemy;
-import com.run.game.screen.GameScreen;
+import com.run.game.model.characters.enemys.Enemy;
 
 import java.util.Random;
 

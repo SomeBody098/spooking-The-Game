@@ -1,20 +1,16 @@
-package com.run.game.model.player;
+package com.run.game.model.characters.player;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.run.game.Main;
 import com.run.game.model.DIRECTION;
+import com.run.game.model.BodyFactory;
 import com.run.game.model.ui.Joystick;
-import com.run.game.screen.GameScreen;
 
 public class PlayerBody {
 
@@ -31,10 +27,13 @@ public class PlayerBody {
     private boolean isIntangibleActive = true;
 
     public PlayerBody(float x, float y, float wight, float height, World world) {
-        body = createBody(
+        body = BodyFactory.createPolygonBody(
+            "player",
+            BodyFactory.BODY_TYPE.DYNAMIC,
+            true,
             x, y,
-            wight * Main.UNIT_SCALE,
-            height * Main.UNIT_SCALE,
+            wight / 2,  // FIXME: 05.05.2025 возможны проблемы изза произвльного деления на 4 (и в фабричном классе и здесь есть деление на 2, в сумме 4)
+            height / 2,   // FIXME: 05.05.2025 возможны проблемы изза произвльного деления на 4 (и в фабричном классе и здесь есть деление на 2, в сумме 4)
             world
         );
 
@@ -91,27 +90,6 @@ public class PlayerBody {
         }
 
         body.setTransform(x, y, body.getAngle());
-    }
-
-    private Body createBody(float x, float y, float wight, float height, World world) {
-        BodyDef def = new BodyDef();
-
-        def.type = BodyDef.BodyType.DynamicBody;
-        def.fixedRotation = true;
-        def.position.set(x, y);
-
-        Body body = world.createBody(def);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(wight / 4, height / 4); // FIXME: 02.05.2025 возможные проблемы из-за деления на 4, (лучше будет на 2) я сделал так для уменшения коллизии игрока
-
-        Fixture fixture = body.createFixture(shape, 1f);
-        fixture.setUserData("player");
-        shape.dispose();
-
-        body.setBullet(true);
-
-        return body;
     }
 
     public void setIntangible(boolean intangible){

@@ -28,7 +28,7 @@ public class ScreenFactory {
 
         }
 
-        throw new IllegalArgumentException("Unknown screen type - " + type);
+        throw new IllegalArgumentException("Unknown screen type: " + type);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.run.game.model.enemy;
+package com.run.game.model.characters.enemys;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool;
 import com.run.game.Main;
 import com.run.game.model.DIRECTION;
-import com.run.game.screen.GameScreen;
 
 public class EnemyVision implements RayCastCallback {
 
