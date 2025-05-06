@@ -3,6 +3,7 @@ package com.run.game.model.characters.enemys;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.run.game.model.dto.exte.EnemyDTO;
 
 public abstract class Enemy {
 
@@ -10,8 +11,11 @@ public abstract class Enemy {
 
     protected final EnemyVision enemyVision;
 
+    protected final EnemyDTO enemyDTO;
+
     public Enemy(float x, float y, float width, float height, float angleOfView, float viewDistance, World world) {
-        enemyBody = new EnemyBody(x, y, width, height, world);
+        enemyDTO = new EnemyDTO("enemy");
+        enemyBody = new EnemyBody(x, y, width, height, world, enemyDTO);
         enemyVision = new EnemyVision(angleOfView, viewDistance);
 
 //        shapeRenderer = new ShapeRenderer();

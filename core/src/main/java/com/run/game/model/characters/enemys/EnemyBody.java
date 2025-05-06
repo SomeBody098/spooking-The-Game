@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.model.BodyFactory;
 import com.run.game.model.DIRECTION;
+import com.run.game.model.dto.exte.EnemyDTO;
 
 public class EnemyBody {
 
@@ -13,14 +14,15 @@ public class EnemyBody {
 
     private DIRECTION direction;
 
-    public EnemyBody(float x, float y, float width, float height, World world) {
+    public EnemyBody(float x, float y, float width, float height, World world, EnemyDTO enemyDTO) {
         body = BodyFactory.createPolygonBody(
-            "enemy",
             BodyFactory.BODY_TYPE.DYNAMIC,
             true,
+            false,
             x, y,
             width, height,
-            world
+            world,
+            enemyDTO
         );
 
         this.width = width;

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.model.BodyFactory;
+import com.run.game.model.dto.exte.ObstaclesDTO;
 import com.run.game.model.map.obstacles.Obstacles;
 
 public class Wall implements Obstacles {
@@ -14,12 +15,13 @@ public class Wall implements Obstacles {
     public Wall(float x, float y, float wight, float height, World world) {
         position = new Vector2(x, y);
         body = BodyFactory.createPolygonBody(
-            "wall",
             BodyFactory.BODY_TYPE.STATIC,
             true,
+            false,
             x, y,
             wight, height,
-            world
+            world,
+            new ObstaclesDTO(getNameObstacles())
         );
     }
 

@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
+import com.run.game.model.MainContactListener;
 import com.run.game.model.characters.enemys.exte.Human;
 import com.run.game.model.map.MapFactory;
 import com.run.game.model.map.Tile;
@@ -64,6 +65,8 @@ public class GameScreen implements Screen {
         this.world = world;
         this.gameViewport = gameViewport;
         this.uiViewport = uiViewport;
+
+        world.setContactListener(new MainContactListener());
 
         player = new Player(
             gameCamera.viewportWidth / 2,

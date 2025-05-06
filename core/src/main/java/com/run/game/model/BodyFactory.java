@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
+import com.run.game.model.dto.Dto;
 
 public class BodyFactory {
 
@@ -56,7 +57,7 @@ public class BodyFactory {
 //        return edgeShape;
 //    }
 
-    public static Body createCircleBody(String name, BODY_TYPE bodyType, boolean fixedRotation, float posX, float posY, float radius, World world) {
+    public static Body createCircleBody(BODY_TYPE bodyType, boolean fixedRotation, boolean isSensor, float posX, float posY, float radius, World world, Dto dto) {
         BodyDef def = new BodyDef();
 
         def.type = getBodyType(bodyType);
@@ -67,7 +68,8 @@ public class BodyFactory {
         Shape shape = createCircleShape((radius / 2) * Main.UNIT_SCALE);
 
         Fixture fixture = body.createFixture(shape, 1f);
-        fixture.setUserData(name);
+        fixture.setUserData(dto);
+        fixture.setSensor(isSensor);
         shape.dispose();
 
         body.setTransform(posX, posY, 0);
@@ -112,7 +114,7 @@ public class BodyFactory {
 //        return chainShape;
 //    }
 
-    public static Body createPolygonBody(String name, BODY_TYPE bodyType, boolean fixedRotation, float posX, float posY, float wight, float height, World world) {
+    public static Body createPolygonBody(BODY_TYPE bodyType, boolean fixedRotation, boolean isSensor, float posX, float posY, float wight, float height, World world, Dto dto) {
         BodyDef def = new BodyDef();
 
         def.type = getBodyType(bodyType);
@@ -126,7 +128,8 @@ public class BodyFactory {
         );
 
         Fixture fixture = body.createFixture(shape, 1f);
-        fixture.setUserData(name);
+        fixture.setUserData(dto);
+        fixture.setSensor(isSensor);
         shape.dispose();
 
         body.setTransform(posX, posY, 0);

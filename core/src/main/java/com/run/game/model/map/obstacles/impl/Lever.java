@@ -7,34 +7,28 @@ import com.run.game.model.BodyFactory;
 import com.run.game.model.dto.exte.ObstaclesDTO;
 import com.run.game.model.map.obstacles.Obstacles;
 
-public class Barrel implements Obstacles {
+public class Lever implements Obstacles {
 
     private final Vector2 position;
+
     private final Body body;
 
-    public Barrel(float x, float y, float wight, float height, World world) {
+    public Lever(float x, float y, float wight, float height, World world) {
         position = new Vector2(x, y);
         body = BodyFactory.createPolygonBody(
             BodyFactory.BODY_TYPE.STATIC,
             true,
-            false,
+            true,
             x, y,
             wight, height,
             world,
             new ObstaclesDTO(getNameObstacles())
         );
-    }
 
-    public Vector2 getPosition() {
-        return position;
-    }
-
-    public Body getBody() {
-        return body;
     }
 
     @Override
     public String getNameObstacles() {
-        return "barrel";
+        return "lever";
     }
 }
