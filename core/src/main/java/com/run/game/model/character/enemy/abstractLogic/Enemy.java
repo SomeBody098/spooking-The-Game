@@ -1,10 +1,11 @@
-package com.run.game.model.characters.enemys.abstractLogic;
+package com.run.game.model.character.enemy.abstractLogic;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.dto.exte.EnemyDTO;
+import com.run.game.model.character.Character;
 
-public abstract class Enemy {
+public abstract class Enemy implements Character {
 
     protected final EnemyBody body;
     protected final EnemyVision vision;

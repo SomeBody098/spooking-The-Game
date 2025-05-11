@@ -10,14 +10,16 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
 import com.run.game.model.MainContactListener;
-import com.run.game.service.HumanService;
-import com.run.game.service.PlayerService;
+import com.run.game.model.ui.buttons.ButtonInteraction;
+import com.run.game.service.character.impl.HumanService;
+import com.run.game.service.character.impl.PlayerService;
 import com.run.game.model.map.MapFactory;
 import com.run.game.model.map.Tile;
 import com.run.game.model.ui.UiFactory;
@@ -43,12 +45,13 @@ public class GameScreen implements Screen {
 
     private final PlayerService player;
 
+    private final HumanService human;
+
     private final Stage stage;
     private final JoystickService joystick;
     private final ButtonShow buttonShow;
     private final ButtonScare buttonScare;
-
-    private final HumanService human;
+    private final ButtonInteraction buttonInteraction;
 
     private final OrthogonalTiledMapRenderer renderer;
 
@@ -93,9 +96,11 @@ public class GameScreen implements Screen {
 
         stage = UiFactory.createUiInterface(uiViewport, batch, uiCamera);
 
-        joystick = (JoystickService) stage.getActors().get(3);
-        buttonShow = (ButtonShow) stage.getActors().get(0);
-        buttonScare = (ButtonScare) stage.getActors().get(1);
+        Array<Actor> actors = stage.getActors();
+        buttonShow = (ButtonShow) actors.get(0);
+        buttonScare = (ButtonScare) actors.get(1);
+        buttonInteraction = (ButtonInteraction) actors.get(2);
+        joystick = (JoystickService) actors.get(3);
 
         box2DDebugRenderer = new Box2DDebugRenderer();
     }
@@ -123,7 +128,7 @@ public class GameScreen implements Screen {
 
         box2DDebugRenderer.render(world, gameCamera.combined);
 
-        // рисуем gui
+        // рисуем ui
         uiViewport.apply();
         batch.setProjectionMatrix(uiCamera.combined);
         stage.act(delta);
@@ -133,6 +138,8 @@ public class GameScreen implements Screen {
     }
 
     private void update(float delta){
+        if (Gdx.input.getInputProcessor() != stage) Gdx.input.setInputProcessor(stage);
+
         world.step(delta, 6, 6);
         gameCamera.update();
         uiCamera.update();
@@ -180,7 +187,6 @@ public class GameScreen implements Screen {
         human.dispose();
         player.dispose();
         renderer.dispose();
-        joystick.dispose();
         stage.dispose();
     }
 

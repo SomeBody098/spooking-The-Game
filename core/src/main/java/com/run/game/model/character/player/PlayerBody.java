@@ -1,4 +1,4 @@
-package com.run.game.model.characters.player;
+package com.run.game.model.character.player;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -7,8 +7,9 @@ import com.run.game.Main;
 import com.run.game.model.DIRECTION;
 import com.run.game.model.BodyFactory;
 import com.run.game.dto.exte.PlayerDTO;
+import com.run.game.model.character.Character;
 
-public class PlayerBody {
+public class PlayerBody implements Character {
 
     public static final float SPEED = Main.UNIT_SCALE;
 
@@ -74,5 +75,10 @@ public class PlayerBody {
 
     public float getHeight() {
         return height;
+    }
+
+    @Override
+    public String getName() {
+        return "player";
     }
 }

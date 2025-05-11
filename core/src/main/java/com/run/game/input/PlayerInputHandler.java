@@ -1,10 +1,10 @@
-package com.run.game.controller;
+package com.run.game.input;
 
 import com.badlogic.gdx.math.Vector2;
 import com.run.game.dto.exte.JoystickDTO;
 import com.run.game.model.DIRECTION;
 
-public class PlayerHandleInput {
+public class PlayerInputHandler {
 
     private DIRECTION direction = DIRECTION.NONE;
 

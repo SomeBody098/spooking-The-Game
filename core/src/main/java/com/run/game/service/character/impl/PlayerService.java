@@ -1,11 +1,11 @@
-package com.run.game.service;
+package com.run.game.service.character.impl;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.run.game.controller.PlayerHandleInput;
+import com.run.game.input.PlayerInputHandler;
 import com.run.game.dto.exte.JoystickDTO;
-import com.run.game.model.characters.player.PlayerBody;
+import com.run.game.model.character.player.PlayerBody;
 import com.run.game.view.PlayerGraphics;
 import com.run.game.dto.exte.PlayerDTO;
 
@@ -15,13 +15,13 @@ public class PlayerService {
 
     private final PlayerGraphics graphics;
 
-    private final PlayerHandleInput handleInput;
+    private final PlayerInputHandler inputHandler;
 
     private final PlayerDTO dto;
 
     public PlayerService(float x, float y, float wight, float height, World world) {
         graphics = new PlayerGraphics();
-        handleInput = new PlayerHandleInput();
+        inputHandler = new PlayerInputHandler();
 
         dto = new PlayerDTO("player");
         dto.setIntangibleActive(!graphics.isAppearance());
@@ -32,14 +32,14 @@ public class PlayerService {
 
     public void updateBody(JoystickDTO joystickDTO){
         if (!graphics.isHasScares()) {
-            Vector2 newPosition = handleInput.handleInput(
+            Vector2 newPosition = inputHandler.handleInput(
                 joystickDTO,
                 body.getPosition(),
                 PlayerBody.SPEED
             );
 
             body.updatePosition(newPosition);
-            body.updateDirection(handleInput.getDirection());
+            body.updateDirection(inputHandler.getDirection());
         }
 
         boolean isPlayerHasStopMoving = !joystickDTO.isJoystickActive();
@@ -68,5 +68,9 @@ public class PlayerService {
 
     public void dispose() {
         graphics.dispose();
+    }
+
+    public String getName(){
+        return body.getName();
     }
 }

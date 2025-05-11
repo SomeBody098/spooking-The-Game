@@ -3,8 +3,6 @@ package com.run.game.model.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.run.game.view.PlayerGraphics;
@@ -34,7 +32,7 @@ public class UiFactory {
         stage.addActor(createButtonInteraction(uiCamera));  // 2
         stage.addActor(joystick);                           // 3
 
-        stage.addListener(joystick.getInputListener());
+        stage.addListener(joystick.getInputHandler());
 
         Gdx.input.setInputProcessor(stage);
 

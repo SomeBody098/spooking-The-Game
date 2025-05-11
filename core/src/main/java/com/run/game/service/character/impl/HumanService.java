@@ -1,12 +1,12 @@
-package com.run.game.service;
+package com.run.game.service.character.impl;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
-import com.run.game.model.characters.enemys.abstractLogic.Enemy;
-import com.run.game.model.characters.enemys.behaviorEnemys.HumanBehavior;
+import com.run.game.model.character.enemy.abstractLogic.Enemy;
+import com.run.game.model.character.enemy.behaviorEnemy.HumanBehavior;
 import com.run.game.view.HumanGraphics;
 
 public class HumanService extends Enemy {
@@ -45,4 +45,8 @@ public class HumanService extends Enemy {
         super.dispose();
     }
 
+    @Override
+    public String getName() {
+        return "human";
+    }
 }

@@ -1,12 +1,11 @@
-package com.run.game.controller;
+package com.run.game.input;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Pool;
 
-public class JoystickInputListener extends InputListener {
+public class JoystickInputHandler extends InputListener {
 
     private final Vector2 position;
 
@@ -19,7 +18,7 @@ public class JoystickInputListener extends InputListener {
     private final float radius;
     private boolean isActive = false;
 
-    public JoystickInputListener(Vector2 position, Vector2 finalPosition, Pool<Vector2> vectorPool, float radius) {
+    public JoystickInputHandler(Vector2 position, Vector2 finalPosition, Pool<Vector2> vectorPool, float radius) {
         this.position = position;
         this.finalPosition = finalPosition;
         this.vectorPool = vectorPool;
@@ -28,13 +27,9 @@ public class JoystickInputListener extends InputListener {
 
     @Override
     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-        y = Gdx.graphics.getHeight() - y; // Инвертируем Y
-
-        Gdx.app.log("isTouchInJoystickArea", "isTouchInJoystickArea(x, y) && JoystickInputListener.this.pointer == -1: " + (isTouchInJoystickArea(x, y) && JoystickInputListener.this.pointer == -1));
-
-        if (isTouchInJoystickArea(x, y) && JoystickInputListener.this.pointer == -1) {
+        if (isTouchInJoystickArea(x, y) && JoystickInputHandler.this.pointer == -1) {
             isActive = true;
-            JoystickInputListener.this.pointer = pointer;
+            JoystickInputHandler.this.pointer = pointer;
             position.set(x, y);
             return true;
         }
@@ -44,7 +39,7 @@ public class JoystickInputListener extends InputListener {
 
     @Override
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-        if (JoystickInputListener.this.pointer == pointer) {
+        if (JoystickInputHandler.this.pointer == pointer) {
             resetJoystick();
             return;
         }
@@ -54,9 +49,7 @@ public class JoystickInputListener extends InputListener {
 
     @Override
     public void touchDragged(InputEvent event, float x, float y, int pointer) {
-        if (pointer == JoystickInputListener.this.pointer && isActive) {
-            y = Gdx.graphics.getHeight() - y;
-
+        if (pointer == JoystickInputHandler.this.pointer && isActive) {
             Vector2 tempPosition = vectorPool.obtain();
 
             tempPosition.set(x - finalPosition.x, y - finalPosition.y); // Ограничиваем движение стика радиусом джойстика

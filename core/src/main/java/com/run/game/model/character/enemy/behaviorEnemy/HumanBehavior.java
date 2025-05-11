@@ -1,4 +1,4 @@
-package com.run.game.model.characters.enemys.behaviorEnemys;
+package com.run.game.model.character.enemy.behaviorEnemy;
 
 import com.badlogic.gdx.math.Vector2;
 import com.run.game.model.DIRECTION;

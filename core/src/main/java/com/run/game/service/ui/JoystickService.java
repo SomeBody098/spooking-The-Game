@@ -2,7 +2,7 @@ package com.run.game.service.ui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.run.game.controller.JoystickInputListener;
+import com.run.game.input.JoystickInputHandler;
 import com.run.game.dto.exte.JoystickDTO;
 import com.run.game.model.ui.joystick.JoystickBody;
 import com.run.game.view.JoystickGraphics;
@@ -13,7 +13,7 @@ public class JoystickService extends Actor{
 
     private final JoystickBody body;
 
-    private final JoystickInputListener inputListener;
+    private final JoystickInputHandler inputHandler;
 
     private final JoystickDTO dto;
 
@@ -22,14 +22,12 @@ public class JoystickService extends Actor{
         body = new JoystickBody(x, y, radius);
         dto = new JoystickDTO("joystick");
 
-        inputListener = new JoystickInputListener(
-            body.getPositionStick(),
-            body.getPositionCircle(),
+        inputHandler = new JoystickInputHandler(
+            body.getPositionStick().cpy(),
+            body.getPositionCircle().cpy(),
             body.getVectorPool(),
             body.getRadius()
         );
-
-        addListener(inputListener);
     }
 
     @Override
@@ -49,18 +47,19 @@ public class JoystickService extends Actor{
     public void act(float delta) {
         super.act(delta);
 
-        body.act(inputListener.isActive());
-        body.updatePositon(inputListener.getPosition());
+        body.setPositionStick(inputHandler.getPosition());
+        body.act(inputHandler.isActive());
+
         updateDto();
     }
 
     @Override
     public Actor hit(float x, float y, boolean touchable) {
-        return inputListener.isActive() ? this : null;
+        return inputHandler.isActive() ? this : null;
     }
 
     private void updateDto(){
-        dto.setJoystickActive(inputListener.isActive());
+        dto.setJoystickActive(inputHandler.isActive());
         dto.setJoystickDirection(body.getDirection());
         dto.setNorPositionStickX(body.getNorPositionStickX());
         dto.setNorPositionStickY(body.getNorPositionStickY());
@@ -70,8 +69,8 @@ public class JoystickService extends Actor{
         return dto;
     }
 
-    public JoystickInputListener getInputListener() {
-        return inputListener;
+    public JoystickInputHandler getInputHandler() {
+        return inputHandler;
     }
 
     public void dispose(){

@@ -1,4 +1,4 @@
-package com.run.game.model.characters.enemys.abstractLogic;
+package com.run.game.model.character.enemy.abstractLogic;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;

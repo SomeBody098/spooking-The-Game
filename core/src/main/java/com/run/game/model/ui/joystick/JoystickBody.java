@@ -44,10 +44,6 @@ public class JoystickBody {
         }
     }
 
-    public void updatePositon(Vector2 positionStick){
-        this.positionStick.set(positionStick);
-    }
-
     public float getNorPositionStickX(){
         Vector2 tempPosition = getNorPositionStick();
         float x = tempPosition.x;
@@ -80,6 +76,10 @@ public class JoystickBody {
 
     public Vector2 getPositionStick() {
         return positionStick;
+    }
+
+    public void setPositionStick(Vector2 positionStick){
+        this.positionStick.set(positionStick);
     }
 
     public Pool<Vector2> getVectorPool() {
