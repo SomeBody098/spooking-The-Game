@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
-import com.run.game.model.ui.ButtonStart;
+import com.run.game.model.ui.buttons.ButtonStart;
 
 public class MainScreen implements Screen {
 

@@ -1,10 +1,10 @@
-package com.run.game.model.characters.enemys;
+package com.run.game.model.characters.enemys.abstractLogic;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.model.BodyFactory;
 import com.run.game.model.DIRECTION;
-import com.run.game.model.dto.exte.EnemyDTO;
+import com.run.game.dto.exte.EnemyDTO;
 
 public class EnemyBody {
 
@@ -12,7 +12,7 @@ public class EnemyBody {
 
     private final float width, height;
 
-    private DIRECTION direction;
+    private DIRECTION direction = DIRECTION.UP;
 
     public EnemyBody(float x, float y, float width, float height, World world, EnemyDTO enemyDTO) {
         body = BodyFactory.createPolygonBody(
@@ -27,8 +27,6 @@ public class EnemyBody {
 
         this.width = width;
         this.height = height;
-
-        direction = DIRECTION.NONE;
     }
 
     public Body getBody() {

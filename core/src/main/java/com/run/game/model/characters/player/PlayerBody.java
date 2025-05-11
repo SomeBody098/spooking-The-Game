@@ -6,8 +6,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
 import com.run.game.model.DIRECTION;
 import com.run.game.model.BodyFactory;
-import com.run.game.model.dto.exte.PlayerDTO;
-import com.run.game.model.ui.Joystick;
+import com.run.game.dto.exte.PlayerDTO;
 
 public class PlayerBody {
 
@@ -39,37 +38,22 @@ public class PlayerBody {
         this.height = height;
     }
 
-    public void handleInput(Joystick joystick) {
-        float x = body.getPosition().x;
-        float y = body.getPosition().y;
-
-        if (joystick.isActive()){
-            float joystickX = joystick.getNorPositionStickX();
-            float joystickY = joystick.getNorPositionStickY();
-            direction = joystick.getDirection();
-
-            x += joystickX * SPEED;
-            y += joystickY * SPEED;
-
-            isPlayerHasStopMoving = false;
-        } else {
-            isPlayerHasStopMoving = true;
-        }
-
-        body.setTransform(x, y, body.getAngle());
+    public void updateState(boolean isPlayerHasStopMoving, boolean isIntangibleActive){
+        this.isPlayerHasStopMoving = isPlayerHasStopMoving;
+        this.isIntangibleActive = isIntangibleActive;
     }
 
-    public void updateDTO(PlayerDTO userData){
+    public void updatePosition(Vector2 newPosition){
+        body.setTransform(newPosition, 0);
+    }
+
+    public void updateDirection(DIRECTION direction){
+        this.direction = direction;
+    }
+
+    public void updateDTO(PlayerDTO userData) {
         userData.setIntangibleActive(isIntangibleActive);
         userData.setPlayerHasStopMoving(isPlayerHasStopMoving);
-    }
-
-    public void setIntangible(boolean intangible){
-        isIntangibleActive = intangible;
-    }
-
-    public boolean isIntangibleActive() {
-        return isIntangibleActive;
     }
 
     public Vector2 getPosition(){

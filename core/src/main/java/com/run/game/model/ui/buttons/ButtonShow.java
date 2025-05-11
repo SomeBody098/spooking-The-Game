@@ -1,4 +1,4 @@
-package com.run.game.model.ui;
+package com.run.game.model.ui.buttons;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

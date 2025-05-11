@@ -7,9 +7,10 @@ import com.badlogic.gdx.utils.Array;
 import com.run.game.Main;
 import com.run.game.model.map.obstacles.Obstacles;
 import com.run.game.model.map.obstacles.impl.Barrel;
+import com.run.game.model.map.obstacles.impl.Lever;
 import com.run.game.model.map.obstacles.impl.Wall;
 
-public class MapFactory {
+public class MapFactory {       // TODO: 07.05.2025 убрать все эти переменные, оставив получения информации через json файл
 
     public static final float WIGHT_FOR_WALLTOP_OR_WALLBOTTOM = 32;
     public static final float HEIGHT_FOR_WALLTOP_OR_WALLBOTTOM = 4;
@@ -70,6 +71,16 @@ public class MapFactory {
 
                             case "barrel":
                                 obstacles.add(new Barrel(
+                                    x + toCenterX,
+                                    y + toCenterY,
+                                    WIGHT_FOR_BARREL,
+                                    HEIGHT_FOR_BARREL,
+                                    world
+                                ));
+                                break;
+
+                            case "lever":
+                                obstacles.add(new Lever(
                                     x + toCenterX,
                                     y + toCenterY,
                                     WIGHT_FOR_BARREL,

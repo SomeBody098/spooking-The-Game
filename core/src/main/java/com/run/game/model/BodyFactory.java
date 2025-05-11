@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
-import com.run.game.model.dto.Dto;
+import com.run.game.dto.Dto;
 
 public class BodyFactory {
 

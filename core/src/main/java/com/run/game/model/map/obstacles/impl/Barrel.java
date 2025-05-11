@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.model.BodyFactory;
-import com.run.game.model.dto.exte.ObstaclesDTO;
+import com.run.game.dto.exte.ObstaclesDTO;
 import com.run.game.model.map.obstacles.Obstacles;
 
 public class Barrel implements Obstacles {

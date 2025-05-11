@@ -1,4 +1,4 @@
-package com.run.game.model.characters.enemys;
+package com.run.game.model.characters.enemys.abstractLogic;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -6,8 +6,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool;
-import com.run.game.Main;
 import com.run.game.model.DIRECTION;
+import com.run.game.dto.Dto;
 
 public class EnemyVision implements RayCastCallback {
 
@@ -18,12 +18,9 @@ public class EnemyVision implements RayCastCallback {
 
     private final Pool<Vector2> vectorPool;
 
-//    private final ShapeRenderer shapeRenderer;
-
-
     public EnemyVision(float angleOfView, float viewDistance) {
         this.angleOfView = angleOfView;
-        this.viewDistance = Main.PPM * Main.UNIT_SCALE * viewDistance;
+        this.viewDistance = viewDistance;
 
         vectorPool = new Pool<Vector2>() {
             @Override
@@ -31,11 +28,17 @@ public class EnemyVision implements RayCastCallback {
                 return new Vector2();
             }
         };
-
-//        shapeRenderer = new ShapeRenderer();
     }
 
-    public void canSee(World world, Vector2 playerPosition, Vector2 enemyPosition, DIRECTION direction) {
+    public void updateVision(World world, Vector2 playerPosition, Vector2 enemyPosition, DIRECTION direction, boolean isAppearance){
+        if (!isAppearance) {
+            setHasSeesPlayer(false);
+        } else {
+            canSee(world, playerPosition, enemyPosition, direction);
+        }
+    }
+
+    private void canSee(World world, Vector2 playerPosition, Vector2 enemyPosition, DIRECTION direction) {
         // Получаем объекты из пула
         Vector2 toPlayer = vectorPool.obtain();
         Vector2 rayEnd = vectorPool.obtain();
@@ -73,14 +76,6 @@ public class EnemyVision implements RayCastCallback {
         // Возвращаем объекты в пул
         vectorPool.free(toPlayer);
         vectorPool.free(rayEnd);
-
-//        // Отладочная отрисовка (опционально)
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//        shapeRenderer.setColor(Color.RED);
-//        shapeRenderer.line(enemyPosition, enemyPosition.cpy().add(enemyDirection.scl(5)));
-//        shapeRenderer.setColor(Color.GREEN);
-//        shapeRenderer.line(enemyPosition, playerPosition);
-//        shapeRenderer.end();
     }
     @Override
     public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
@@ -90,23 +85,15 @@ public class EnemyVision implements RayCastCallback {
             return -1; // Превышена дистанция
         }
 
-        if (fixture.getUserData() != null && fixture.getUserData().equals("player")) {
+        String nameObject = ((Dto) fixture.getUserData()).getName();
+
+        if (fixture.getUserData() != null && nameObject.equals("player")) {
             hasSeesPlayer = true;
             return fraction; // Игрок найден
-        } else if (fixture.getUserData() != null && !fixture.getUserData().equals("player")){
+        } else {
             hasSeesPlayer = false;
             return 0; // прекращаем RayCast
         }
-
-        return -1; // Игнорировать другие объекты
-    }
-
-    public float getViewDistance() {
-        return viewDistance;
-    }
-
-    public float getAngleOfView() {
-        return angleOfView;
     }
 
     public boolean isHasSeesPlayer() {
@@ -119,7 +106,6 @@ public class EnemyVision implements RayCastCallback {
 
     public void dispose(){
         vectorPool.clear();
-//        shapeRenderer.dispose();
     }
 
 }

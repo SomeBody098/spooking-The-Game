@@ -1,4 +1,4 @@
-package com.run.game.model.characters.player;
+package com.run.game.view;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.run.game.Main;
 import com.run.game.model.DIRECTION;
-import com.run.game.screen.GameScreen;
 
 import java.util.Arrays;
 
@@ -189,8 +188,6 @@ public class PlayerGraphics {
         );
 
         batch.setColor(Color.WHITE);
-
-//        Gdx.app.log("Drawing Player", "Draw at X: " + (x - divW) + ", Y: " + (y - divH)); // логи, отслеживают координаты игрока
     }
 
     private TextureRegion getCurrentFrame() {

@@ -1,4 +1,4 @@
-package com.run.game.model.ui;
+package com.run.game.model.ui.buttons;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -54,13 +54,11 @@ public class ButtonScare extends Button {
         super.act(delta);
     }
 
-    public boolean canActive(boolean playerIsAppearance){
+    public void canActive(boolean playerIsAppearance){
         if (!playerIsAppearance) {
             isOnCooldown = false;
             remainingCooldown = 0;
         }
-
-        return playerIsAppearance;
     }
 
     public boolean isAbilityActive() {

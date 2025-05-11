@@ -2,7 +2,6 @@ package com.run.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,14 +16,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
 import com.run.game.model.MainContactListener;
-import com.run.game.model.characters.enemys.exte.Human;
+import com.run.game.service.HumanService;
+import com.run.game.service.PlayerService;
 import com.run.game.model.map.MapFactory;
 import com.run.game.model.map.Tile;
-import com.run.game.model.characters.player.PlayerGraphics;
-import com.run.game.model.ui.ButtonScare;
-import com.run.game.model.ui.ButtonShow;
-import com.run.game.model.ui.Joystick;
-import com.run.game.model.characters.player.Player;
+import com.run.game.model.ui.UiFactory;
+import com.run.game.model.ui.buttons.ButtonScare;
+import com.run.game.model.ui.buttons.ButtonShow;
+import com.run.game.service.ui.JoystickService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,14 +41,14 @@ public class GameScreen implements Screen {
     private final FitViewport gameViewport;
     private final ScreenViewport uiViewport;
 
-    private final Player player;
+    private final PlayerService player;
 
     private final Stage stage;
-    private final Joystick joystick;
+    private final JoystickService joystick;
     private final ButtonShow buttonShow;
     private final ButtonScare buttonScare;
 
-    private final Human human;
+    private final HumanService human;
 
     private final OrthogonalTiledMapRenderer renderer;
 
@@ -68,7 +67,7 @@ public class GameScreen implements Screen {
 
         world.setContactListener(new MainContactListener());
 
-        player = new Player(
+        player = new PlayerService(
             gameCamera.viewportWidth / 2,
             gameCamera.viewportHeight / 2,
             Main.PPM,
@@ -76,7 +75,7 @@ public class GameScreen implements Screen {
             world
         );
 
-        human = new Human(
+        human = new HumanService(
             4,
             3,
             Main.PPM,
@@ -92,44 +91,11 @@ public class GameScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, Main.UNIT_SCALE);
         renderer.setView(gameCamera);
 
-        // ui components
+        stage = UiFactory.createUiInterface(uiViewport, batch, uiCamera);
 
-        float joystickRadius = Math.min(uiCamera.viewportWidth, uiCamera.viewportHeight) * 0.15f; // 15% от меньшей стороны
-        float joystickX = joystickRadius * 1.5f;
-        float joystickY = joystickRadius * 1.5f;
-
-        joystick = new Joystick(
-            joystickX,
-            joystickY,
-            joystickRadius
-        );
-
-        float buttonSize = uiCamera.viewportHeight * 0.1f; // 10% от высоты
-        float buttonShowMargin = buttonSize * 0.5f;
-
-        buttonShow = new ButtonShow(
-            uiCamera.viewportWidth - buttonSize - buttonShowMargin,
-            buttonShowMargin,
-            buttonSize,
-            buttonSize
-        );
-
-        float buttonScareMargin = buttonSize * 0.5f;
-
-        buttonScare = new ButtonScare(
-            uiCamera.viewportWidth - buttonSize - buttonScareMargin,
-            buttonScareMargin + buttonShow.getHeight(),
-            buttonSize,
-            buttonSize,
-            PlayerGraphics.TIME_FOR_SCARE + PlayerGraphics.TIME_FOR_LAUGH
-        );
-
-        stage = new Stage(new ScreenViewport(uiCamera), batch);
-        stage.addActor(buttonShow);
-        stage.addActor(joystick);
-        stage.addActor(buttonScare);
-
-        Gdx.input.setInputProcessor(new InputMultiplexer(joystick, stage));
+        joystick = (JoystickService) stage.getActors().get(3);
+        buttonShow = (ButtonShow) stage.getActors().get(0);
+        buttonScare = (ButtonScare) stage.getActors().get(1);
 
         box2DDebugRenderer = new Box2DDebugRenderer();
     }
@@ -149,7 +115,7 @@ public class GameScreen implements Screen {
         batch.begin();
 
         player.draw(batch, 0.02f);
-        human.draw(batch, 1f);
+        human.draw(batch);
 
         batch.end();
 
@@ -167,15 +133,12 @@ public class GameScreen implements Screen {
     }
 
     private void update(float delta){
-        if (Gdx.input.getInputProcessor() != stage){
-            Gdx.input.setInputProcessor(new InputMultiplexer(joystick, stage)); // FIXME: 25.04.2025 обрати внимание на этот кусок в будущем
-        }
-
         world.step(delta, 6, 6);
         gameCamera.update();
         uiCamera.update();
-        player.update(delta, joystick, buttonShow.isActive(), buttonScare.isAbilityActive());
-        human.update(world, player.getPosition(), delta, player.isAppearance());
+
+        updatePlayer(delta);
+        human.update(delta, world, player.getPosition(), player.isAppearance());
 
         // ui
 
@@ -184,6 +147,11 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
             main.update(SCREEN_TYPE.MAIN);
         }
+    }
+
+    private void updatePlayer(float delta){
+        player.updateBody(joystick.getDto());
+        player.updateGraphics(delta, buttonShow.isActive(), buttonScare.isAbilityActive());
     }
 
     @Override

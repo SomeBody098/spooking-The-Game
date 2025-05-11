@@ -1,4 +1,4 @@
-package com.run.game.model.dto;
+package com.run.game.dto;
 
 public abstract class Dto {
     private final String name;
