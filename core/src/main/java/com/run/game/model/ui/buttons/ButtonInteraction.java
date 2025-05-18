@@ -5,12 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.run.game.model.map.Interactable;
 
 public class ButtonInteraction extends Button {
 
     private boolean isActive = false;
 
-    private boolean isAppearance = false;
+    private boolean isShowing = false;
 
     public ButtonInteraction(float x, float y, float width, float height) {
         Button.ButtonStyle style = new Button.ButtonStyle();
@@ -26,9 +28,15 @@ public class ButtonInteraction extends Button {
 
         super.addListener(new ClickListener(){
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                isActive = !isActive;
-                super.clicked(event, x, y);
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isActive = true;
+                return super.touchDown(event, x, y, pointer, button);
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isActive = false;
+                super.touchUp(event, x, y, pointer, button);
             }
         });
     }
@@ -36,7 +44,22 @@ public class ButtonInteraction extends Button {
     @Override
     public void act(float delta) {
         super.act(delta);
-        super.setVisible(isAppearance);
+        super.setVisible(isShowing);
+    }
+
+    public void update(ObjectMap<String, Interactable> interactableObjects){
+        for (ObjectMap.Entry<String, Interactable> interactableEntry: interactableObjects.entries()){
+            Interactable value = interactableEntry.value;
+
+            if (value.isTouched()) {
+                isShowing = isNeedToShow(value);
+                break;
+            }
+        }
+    }
+
+    private boolean isNeedToShow(Interactable value){
+        return !value.isActivate();
     }
 
     public boolean isActive() {
@@ -47,11 +70,11 @@ public class ButtonInteraction extends Button {
         isActive = active;
     }
 
-    public boolean isAppearance() {
-        return isAppearance;
+    public boolean isShowing() {
+        return isShowing;
     }
 
-    public void setAppearance(boolean appearance) {
-        isAppearance = appearance;
+    public void setShowing(boolean showing) {
+        isShowing = showing;
     }
 }

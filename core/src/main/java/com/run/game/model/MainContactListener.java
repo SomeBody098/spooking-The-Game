@@ -12,7 +12,26 @@ import com.run.game.dto.exte.PlayerDTO;
 public class MainContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
+        Dto aDto = getDtoFromFixture(contact.getFixtureA());
+        Dto bDto = getDtoFromFixture(contact.getFixtureB());
 
+        if (aDto == null || bDto == null) return;
+
+        LeverDTO leverDTO = null;
+        if (isLeverDto(aDto)){
+            leverDTO = (LeverDTO) aDto;
+        } else if (isLeverDto(bDto)){
+            leverDTO = (LeverDTO) bDto;
+        }
+
+        if (leverDTO == null) return;
+
+        if (isPlayerDto(aDto) && !leverDTO.isActivate()) {
+            ((LeverDTO) bDto).setTouched(true);
+
+        } else if (isPlayerDto(bDto) && !leverDTO.isActivate()) {
+            ((LeverDTO) aDto).setTouched(true);
+        }
     }
 
     @Override
@@ -37,15 +56,10 @@ public class MainContactListener implements ContactListener {
             PlayerDTO playerDTO = (PlayerDTO) aDto;
             playerHandler(contact, playerDTO, bDto);
 
-            if (isLeverDto(bDto)) leverHandler((LeverDTO) bDto);
-
         } else if (isPlayerDto(bDto)) {
             PlayerDTO playerDTO = (PlayerDTO) bDto;
             playerHandler(contact, playerDTO, aDto);
-
-            if (isLeverDto(aDto)) leverHandler((LeverDTO) aDto);
         }
-
     }
 
     @Override

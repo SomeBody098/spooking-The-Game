@@ -1,4 +1,4 @@
-package com.run.game.service.character.impl;
+package com.run.game.service.character.player;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
@@ -13,11 +13,11 @@ public class PlayerService {
 
     private final PlayerBody body;
 
-    private final PlayerGraphics graphics;
-
     private final PlayerInputHandler inputHandler;
 
     private final PlayerDTO dto;
+
+    private final PlayerGraphics graphics;
 
     public PlayerService(float x, float y, float wight, float height, World world) {
         graphics = new PlayerGraphics();
@@ -31,7 +31,7 @@ public class PlayerService {
     }
 
     public void updateBody(JoystickDTO joystickDTO){
-        if (!graphics.isHasScares()) {
+        if (isStopMoving()) {
             Vector2 newPosition = inputHandler.handleInput(
                 joystickDTO,
                 body.getPosition(),
@@ -47,6 +47,10 @@ public class PlayerService {
 
         body.updateState(isPlayerHasStopMoving, isIntangibleActive);
         body.updateDTO(dto);
+    }
+
+    private boolean isStopMoving(){
+        return !graphics.isHasScares();
     }
 
     public void updateGraphics(float delta, boolean buttonShowIsActive, boolean buttonScareIsActive){

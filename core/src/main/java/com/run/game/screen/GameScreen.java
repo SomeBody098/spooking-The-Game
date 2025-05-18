@@ -5,32 +5,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
+import com.run.game.controller.UiController;
 import com.run.game.model.MainContactListener;
-import com.run.game.model.ui.buttons.ButtonInteraction;
-import com.run.game.service.character.impl.HumanService;
-import com.run.game.service.character.impl.PlayerService;
-import com.run.game.model.map.MapFactory;
-import com.run.game.model.map.Tile;
-import com.run.game.model.ui.UiFactory;
-import com.run.game.model.ui.buttons.ButtonScare;
-import com.run.game.model.ui.buttons.ButtonShow;
-import com.run.game.service.ui.JoystickService;
+import com.run.game.model.map.obstacles.impl.Lever;
+import com.run.game.service.character.enemy.exte.HumanService;
+import com.run.game.service.character.player.PlayerService;
+import com.run.game.service.map.MapService;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class GameScreen implements Screen {
+public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать физику в данном скрине (World, Box2DDebugRenderer, PlayerService, HumanService.
+                                            // FIXME Причем Player и Human Service'ы разделить на физику и графику)
 
     private final Main main;
     private final SpriteBatch batch;
@@ -44,18 +32,10 @@ public class GameScreen implements Screen {
     private final ScreenViewport uiViewport;
 
     private final PlayerService player;
-
     private final HumanService human;
+    private final MapService map;
 
-    private final Stage stage;
-    private final JoystickService joystick;
-    private final ButtonShow buttonShow;
-    private final ButtonScare buttonScare;
-    private final ButtonInteraction buttonInteraction;
-
-    private final OrthogonalTiledMapRenderer renderer;
-
-    private final Map<String, Array<? extends Tile>> tiledMapLayers;
+    private final UiController uiController;
 
     private final Box2DDebugRenderer box2DDebugRenderer;
 
@@ -86,21 +66,9 @@ public class GameScreen implements Screen {
             world
         );
 
-        tiledMapLayers = new HashMap<>();
-        TiledMap map = new TmxMapLoader().load("tileset/graveyard/firstlevel/firstLevel.tmx");
+        map = new MapService(batch, gameCamera, world);
 
-        tiledMapLayers.put("obstacles", MapFactory.createBodyForObstacles(map, world));
-
-        renderer = new OrthogonalTiledMapRenderer(map, Main.UNIT_SCALE);
-        renderer.setView(gameCamera);
-
-        stage = UiFactory.createUiInterface(uiViewport, batch, uiCamera);
-
-        Array<Actor> actors = stage.getActors();
-        buttonShow = (ButtonShow) actors.get(0);
-        buttonScare = (ButtonScare) actors.get(1);
-        buttonInteraction = (ButtonInteraction) actors.get(2);
-        joystick = (JoystickService) actors.get(3);
+        uiController = new UiController(uiViewport, batch, uiCamera);
 
         box2DDebugRenderer = new Box2DDebugRenderer();
     }
@@ -115,31 +83,29 @@ public class GameScreen implements Screen {
         gameViewport.apply();
         batch.setProjectionMatrix(gameCamera.combined);
 
-        renderer.render(new int[]{0}); // слой ground
+        batch.begin(); {
 
-        batch.begin();
+            map.render(map.getMapLayerByName("ground")); // слой ground
 
-        player.draw(batch, 0.02f);
-        human.draw(batch);
+            player.draw(batch, 0.02f);
+            human.draw(batch);
 
-        batch.end();
+            map.render(map.getMapLayerByName("obstacles")); // слой obstacles
 
-        renderer.render(new int[]{1}); // слой obstacles
+        } batch.end();
 
         box2DDebugRenderer.render(world, gameCamera.combined);
 
         // рисуем ui
         uiViewport.apply();
         batch.setProjectionMatrix(uiCamera.combined);
-        stage.act(delta);
-        stage.draw();
+
+        uiController.render(delta);
 
         update(delta);
     }
 
     private void update(float delta){
-        if (Gdx.input.getInputProcessor() != stage) Gdx.input.setInputProcessor(stage);
-
         world.step(delta, 6, 6);
         gameCamera.update();
         uiCamera.update();
@@ -149,7 +115,9 @@ public class GameScreen implements Screen {
 
         // ui
 
-        buttonScare.canActive(player.isAppearance());
+        uiController.buttonScareCanActive(player.isAppearance());
+
+        updateInteractionOnLever();
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)){
             main.update(SCREEN_TYPE.MAIN);
@@ -157,8 +125,29 @@ public class GameScreen implements Screen {
     }
 
     private void updatePlayer(float delta){
-        player.updateBody(joystick.getDto());
-        player.updateGraphics(delta, buttonShow.isActive(), buttonScare.isAbilityActive());
+        player.updateBody(uiController.getJoystickDto());
+
+        player.updateGraphics(
+            delta,
+            uiController.getButtonShowIsActive(),
+            uiController.getButtonScareIsAbilityActive()
+        );
+    }
+
+    private void updateInteractionOnLever(){  // FIXME: 14.05.2025 ПЕРЕМЕСТИТЬ В ДРУГОЕ МЕСТО И ПЕРЕДЕЛАТЬ!
+        Lever lever = (Lever) map.getTileObject("obstacles", "leveroff");
+
+        lever.update();
+        if (!player.isAppearance()) {
+            lever.setTouched(false);
+        }
+
+        uiController.updateButtonInteraction(map.getInteractableObject());
+
+        if (uiController.getButtonInteractionIsActive()) {
+            map.updateInteracted();
+            map.setTile("obstacles", "leveron", lever.getPosition());
+        }
     }
 
     @Override
@@ -186,8 +175,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         human.dispose();
         player.dispose();
-        renderer.dispose();
-        stage.dispose();
+        map.dispose();
     }
 
 }

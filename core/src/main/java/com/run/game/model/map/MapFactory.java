@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.run.game.Main;
 import com.run.game.model.map.obstacles.Obstacles;
 import com.run.game.model.map.obstacles.impl.Barrel;
@@ -21,8 +22,8 @@ public class MapFactory {       // TODO: 07.05.2025 убрать все эти �
     public static final float WIGHT_FOR_BARREL = 26;
     public static final float HEIGHT_FOR_BARREL = 32;
 
-    public static Array<Obstacles> createBodyForObstacles(TiledMap map, World world){
-        Array<Obstacles> obstacles = new Array<>();
+    public static ObjectMap<String, Obstacles> createBodyForObstacles(TiledMap map, World world){
+        ObjectMap<String, Obstacles> obstacles = new ObjectMap<>();
         TiledMapTileLayer obstaclesLayer = (TiledMapTileLayer) map.getLayers().get("obstacles");
 
         float toCenterX = (float) obstaclesLayer.getTileWidth() / 2 * Main.UNIT_SCALE;
@@ -39,54 +40,50 @@ public class MapFactory {       // TODO: 07.05.2025 убрать все эти �
                     if (name != null) {
                         switch (name) {
                             case "walltop":
+                                obstacles.put("walltop",
+                                    createWallTopOrBottom(
+                                        x + toCenterX,
+                                        y + toCenterY,
+                                        world));
+                                break;
                             case "wallbottom":
-                                obstacles.add(new Wall(
-                                    x + toCenterX,
-                                    y + toCenterY,
-                                    WIGHT_FOR_WALLTOP_OR_WALLBOTTOM,
-                                    HEIGHT_FOR_WALLTOP_OR_WALLBOTTOM,
-                                    world
-                                    ));
+                                obstacles.put("wallbottom",
+                                    createWallTopOrBottom(
+                                        x + toCenterX,
+                                        y + toCenterY,
+                                        world));
                                 break;
 
                             case "wallright":
-                                obstacles.add(new Wall(
-                                    x,
-                                    y + toCenterY,
-                                    WIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
-                                    HEIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
-                                    world
-                                ));
+                                obstacles.put("wallright",
+                                    createWallRight(x,
+                                        y + toCenterY,
+                                        world));
                                 break;
 
                             case "wallleft":
-                                obstacles.add(new Wall(
-                                    x + toCenterX * 2,
-                                    y + toCenterY,
-                                    WIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
-                                    HEIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
-                                    world
-                                ));
+                                obstacles.put("wallleft",
+                                    createWallLeft(
+                                        x + toCenterX * 2,
+                                        y + toCenterY,
+                                        world));
                                 break;
 
                             case "barrel":
-                                obstacles.add(new Barrel(
-                                    x + toCenterX,
-                                    y + toCenterY,
-                                    WIGHT_FOR_BARREL,
-                                    HEIGHT_FOR_BARREL,
-                                    world
-                                ));
+                                obstacles.put("barrel",
+                                    createBarrel(
+                                        x + toCenterX,
+                                        y + toCenterY,
+                                        world));
                                 break;
 
-                            case "lever":
-                                obstacles.add(new Lever(
-                                    x + toCenterX,
-                                    y + toCenterY,
-                                    WIGHT_FOR_BARREL,
-                                    HEIGHT_FOR_BARREL,
-                                    world
-                                ));
+                            case "leveroff":
+                                obstacles.put("leveroff",
+                                    createLever(
+                                        cell,
+                                        x + toCenterX,
+                                        y + toCenterY,
+                                        world));
                                 break;
                         }
                     }
@@ -97,5 +94,49 @@ public class MapFactory {       // TODO: 07.05.2025 убрать все эти �
         return obstacles;
     }
 
+    private static Wall createWallTopOrBottom(float x, float y, World world){
+        return new Wall(
+            x, y,
+            WIGHT_FOR_WALLTOP_OR_WALLBOTTOM,
+            HEIGHT_FOR_WALLTOP_OR_WALLBOTTOM,
+            world
+        );
+    }
+
+    private static Wall createWallRight(float x, float y, World world){
+        return new Wall(
+            x, y,
+            WIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
+            HEIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
+            world
+        );
+    }
+
+    private static Wall createWallLeft(float x, float y, World world){
+        return new Wall(
+            x, y,
+            WIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
+            HEIGHT_FOR_WALLRIGHT_OR_WALLLEFT,
+            world
+        );
+    }
+
+    private static Barrel createBarrel(float x, float y, World world){
+        return new Barrel(
+            x, y,
+            WIGHT_FOR_BARREL,
+            HEIGHT_FOR_BARREL,
+            world
+        );
+    }
+
+    private static Lever createLever(TiledMapTileLayer.Cell cell, float x, float y, World world){
+        return new Lever(
+            x, y,
+            WIGHT_FOR_BARREL,
+            HEIGHT_FOR_BARREL,
+            world
+        );
+    }
 
 }

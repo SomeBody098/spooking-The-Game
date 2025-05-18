@@ -1,8 +1,8 @@
 package com.run.game.service.character;
 
 import com.badlogic.gdx.physics.box2d.World;
-import com.run.game.service.character.impl.HumanService;
-import com.run.game.service.character.impl.PlayerService;
+import com.run.game.service.character.enemy.exte.HumanService;
+import com.run.game.service.character.player.PlayerService;
 
 public class CharacterFactory {
 

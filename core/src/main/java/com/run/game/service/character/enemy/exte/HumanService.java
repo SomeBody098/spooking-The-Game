@@ -1,15 +1,15 @@
-package com.run.game.service.character.impl;
+package com.run.game.service.character.enemy.exte;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.run.game.Main;
-import com.run.game.model.character.enemy.abstractLogic.Enemy;
 import com.run.game.model.character.enemy.behaviorEnemy.HumanBehavior;
+import com.run.game.service.character.enemy.EnemyPhysicService;
 import com.run.game.view.HumanGraphics;
 
-public class HumanService extends Enemy {
+public class HumanService extends EnemyPhysicService {
 
     public static final float SPEED = Main.UNIT_SCALE;
     public static final float VIEW_DISTANCE = Main.PPM * 5 * Main.UNIT_SCALE;
