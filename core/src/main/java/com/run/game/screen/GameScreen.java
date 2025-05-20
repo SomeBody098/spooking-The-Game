@@ -13,13 +13,12 @@ import com.run.game.Main;
 import com.run.game.controller.UiController;
 import com.run.game.model.MainContactListener;
 import com.run.game.model.map.obstacles.impl.Lever;
-import com.run.game.service.character.enemy.exte.HumanService;
+import com.run.game.service.character.enemy.physic.EnemyPhysicService;
 import com.run.game.service.character.player.PlayerService;
 import com.run.game.service.map.MapService;
 
-public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать физику в данном скрине (World, Box2DDebugRenderer, PlayerService, HumanService.
+public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать физику в данном скрине (World, Box2DDebugRenderer, PlayerService, EnemyPhysicService.
                                             // FIXME Причем Player и Human Service'ы разделить на физику и графику)
-
     private final Main main;
     private final SpriteBatch batch;
 
@@ -32,7 +31,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
     private final ScreenViewport uiViewport;
 
     private final PlayerService player;
-    private final HumanService human;
+    private final EnemyPhysicService human;
     private final MapService map;
 
     private final UiController uiController;
@@ -58,7 +57,8 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
             world
         );
 
-        human = new HumanService(
+        human = new EnemyPhysicService(
+            "human",
             4,
             3,
             Main.PPM,
@@ -88,7 +88,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
             map.render(map.getMapLayerByName("ground")); // слой ground
 
             player.draw(batch, 0.02f);
-            human.draw(batch);
+//            human.draw(batch);
 
             map.render(map.getMapLayerByName("obstacles")); // слой obstacles
 
@@ -111,7 +111,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
         uiCamera.update();
 
         updatePlayer(delta);
-        human.update(delta, world, player.getPosition(), player.isAppearance());
+        human.update(delta, 0.03125F, world, player.getPosition(), player.isAppearance());
 
         // ui
 

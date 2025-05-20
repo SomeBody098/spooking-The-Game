@@ -1,11 +1,11 @@
-package com.run.game.model.character.enemy.behaviorEnemy;
+package com.run.game.model.character.enemy.behaviorEnemy.impl;
 
-import com.badlogic.gdx.math.Vector2;
 import com.run.game.model.DIRECTION;
+import com.run.game.model.character.enemy.behaviorEnemy.EnemyBehavior;
 
 import java.util.Random;
 
-public class HumanBehavior {
+public class HumanBehavior implements EnemyBehavior {
 
     private final Random random;
 
@@ -21,7 +21,8 @@ public class HumanBehavior {
         random = new Random();
     }
 
-    public Vector2 patrol(float delta, float speed, Vector2 position){
+    @Override
+    public DIRECTION patrol(float delta){
         if (timePatrol <= 0){
             switch (random.nextInt(4)) {
                 case 0:
@@ -57,13 +58,10 @@ public class HumanBehavior {
         }
 
         if (isPatrol){
-            Vector2 enemyDirection = direction.getVector();
-
-            position.add(speed * enemyDirection.x, speed * enemyDirection.y);
             timePatrol -= delta;
         }
 
-        return position;
+        return direction;
     }
 
     public DIRECTION getDirection() {

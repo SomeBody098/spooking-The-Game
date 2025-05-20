@@ -1,0 +1,7 @@
+{
+  "human" : {
+    "angleOfView": 70,
+    "speed": 0.03125,
+    "viewDistance": 50
+  }
+}

@@ -80,7 +80,6 @@ public class MapFactory {       // TODO: 07.05.2025 убрать все эти �
                             case "leveroff":
                                 obstacles.put("leveroff",
                                     createLever(
-                                        cell,
                                         x + toCenterX,
                                         y + toCenterY,
                                         world));
@@ -130,7 +129,7 @@ public class MapFactory {       // TODO: 07.05.2025 убрать все эти �
         );
     }
 
-    private static Lever createLever(TiledMapTileLayer.Cell cell, float x, float y, World world){
+    private static Lever createLever(float x, float y, World world){
         return new Lever(
             x, y,
             WIGHT_FOR_BARREL,
