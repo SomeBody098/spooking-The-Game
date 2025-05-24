@@ -10,9 +10,11 @@ public class EnemyBody {
 
     private final Body body;
 
+    private final Body sensor;
+
     private final float width, height;
 
-    private DIRECTION direction = DIRECTION.UP;
+    private DIRECTION direction = DIRECTION.NONE;
 
     public EnemyBody(float x, float y, float width, float height, World world, EnemyDTO enemyDTO) {
         body = BodyFactory.createPolygonBody(
@@ -25,12 +27,27 @@ public class EnemyBody {
             enemyDTO
         );
 
+        sensor = BodyFactory.createPolygonBody(
+            BodyFactory.BODY_TYPE.DYNAMIC,
+            true,
+            true,
+            x, y,
+            width + (width / 2),
+            height + (height / 2),
+            world,
+            enemyDTO
+        );
+
         this.width = width;
         this.height = height;
     }
 
     public Body getBody() {
         return body;
+    }
+
+    public Body getSensor() {
+        return sensor;
     }
 
     public float getWidth() {
