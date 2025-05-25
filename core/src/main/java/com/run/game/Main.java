@@ -10,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.run.game.entities.enemies.utils.EnemyBodyFactory;
+import com.run.game.entities.enemies.utils.EnemyFactory;
 import com.run.game.screen.SCREEN_TYPE;
 import com.run.game.screen.ScreenFactory;
 
@@ -63,6 +65,8 @@ public class Main extends Game {
         uiViewport = new ScreenViewport(uiCamera);
 
         world = new World(new Vector2(), false);
+
+        EnemyFactory.init(world);
 
         screens = new HashMap<>();
         screens.put(SCREEN_TYPE.MAIN, ScreenFactory.createScreen(this, SCREEN_TYPE.MAIN));

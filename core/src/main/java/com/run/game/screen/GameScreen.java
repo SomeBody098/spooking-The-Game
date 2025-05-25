@@ -11,11 +11,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
 import com.run.game.controller.UiController;
-import com.run.game.model.MainContactListener;
-import com.run.game.model.map.obstacles.impl.Lever;
-import com.run.game.service.character.enemy.physic.EnemyPhysicService;
-import com.run.game.service.character.player.PlayerService;
-import com.run.game.service.map.MapService;
+import com.run.game.entities.MainContactListener;
+import com.run.game.entities.enemies.Enemy;
+import com.run.game.entities.enemies.utils.EnemyFactory;
+import com.run.game.map.obstacles.impl.Lever;
+import com.run.game.entities.player.Player;
+import com.run.game.map.MapService;
 
 public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать физику в данном скрине (World, Box2DDebugRenderer, PlayerService, EnemyPhysicService.
                                             // FIXME Причем Player и Human Service'ы разделить на физику и графику)
@@ -30,8 +31,8 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
     private final FitViewport gameViewport;
     private final ScreenViewport uiViewport;
 
-    private final PlayerService player;
-    private final EnemyPhysicService human;
+    private final Player player;
+    private final Enemy human;
     private final MapService map;
 
     private final UiController uiController;
@@ -49,7 +50,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
 
         world.setContactListener(new MainContactListener());
 
-        player = new PlayerService(
+        player = new Player(
             gameCamera.viewportWidth / 2,
             gameCamera.viewportHeight / 2,
             Main.PPM,
@@ -57,14 +58,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
             world
         );
 
-        human = new EnemyPhysicService(
-            "human",
-            4,
-            3,
-            Main.PPM,
-            Main.PPM,
-            world
-        );
+        human = EnemyFactory.createEnemy("human");
 
         map = new MapService(batch, gameCamera, world);
 
@@ -88,7 +82,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
             map.render(map.getMapLayerByName("ground")); // слой ground
 
             player.draw(batch, 0.02f);
-//            human.draw(batch);
+            human.draw(batch);
 
             map.render(map.getMapLayerByName("obstacles")); // слой obstacles
 
@@ -111,7 +105,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
         uiCamera.update();
 
         updatePlayer(delta);
-        human.update(delta, 0.03125F, world, player.getPosition(), player.isAppearance());
+        human.update(player.getPosition(), player.isAppearance());
 
         // ui
 
@@ -134,7 +128,7 @@ public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать ф
         );
     }
 
-    private void updateInteractionOnLever(){  // FIXME: 14.05.2025 ПЕРЕМЕСТИТЬ В ДРУГОЕ МЕСТО И ПЕРЕДЕЛАТЬ!
+    private void updateInteractionOnLever(){  // FIXME: 14.05.2025 ПЕРЕМЕСТИТЬ В ДРУГОЕ МЕСТО И ПЕРЕДЕЛАТЬ! (он еще и глючит моленько кстати, из-за логики самой кнопки)
         Lever lever = (Lever) map.getTileObject("obstacles", "leveroff");
 
         lever.update();

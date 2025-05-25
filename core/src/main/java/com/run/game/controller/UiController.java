@@ -9,16 +9,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.run.game.dto.exte.JoystickDTO;
-import com.run.game.model.map.Interactable;
-import com.run.game.model.ui.UiFactory;
-import com.run.game.model.ui.buttons.ButtonInteraction;
-import com.run.game.model.ui.buttons.ButtonScare;
-import com.run.game.model.ui.buttons.ButtonShow;
-import com.run.game.service.ui.JoystickService;
+import com.run.game.map.Interactable;
+import com.run.game.ui.UiFactory;
+import com.run.game.ui.buttons.ButtonInteraction;
+import com.run.game.ui.buttons.ButtonScare;
+import com.run.game.ui.buttons.ButtonShow;
+import com.run.game.ui.joystick.Joystick;
 
 public class UiController {
     private final Stage stage;
-    private final JoystickService joystick;
+    private final Joystick joystick;
     private final ButtonShow buttonShow;
     private final ButtonScare buttonScare;
     private final ButtonInteraction buttonInteraction;
@@ -30,7 +30,7 @@ public class UiController {
         buttonShow = (ButtonShow) actors.get(0);
         buttonScare = (ButtonScare) actors.get(1);
         buttonInteraction = (ButtonInteraction) actors.get(2);
-        joystick = (JoystickService) actors.get(3);
+        joystick = (Joystick) actors.get(3);
     }
 
     public void render(float delta){
@@ -57,6 +57,10 @@ public class UiController {
 
     public void updateButtonInteraction(ObjectMap<String, Interactable> interactableObjects){
         buttonInteraction.update(interactableObjects);
+    }
+
+    public void resetButtonInteraction(){
+        buttonInteraction.setShowing(false);
     }
 
     public JoystickDTO getJoystickDto() {
