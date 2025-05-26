@@ -48,7 +48,7 @@ public class GameManager {
             world
         );
 
-        enemies = new EnemiesController("human");
+        enemies = new EnemiesController("human", "human");
 
         map = new MapController(batch, gameCamera, world);
 

@@ -12,8 +12,10 @@ public class EnemiesController {
     public EnemiesController(String... enemyName) {
         enemies = new ObjectMap<>();
 
-        for (String name: enemyName) {
-            enemies.put(name, EnemyFactory.createEnemy(name));
+        for (int i = 0; i < enemyName.length; i++) {
+            String name = enemyName[i];
+
+            enemies.put(name + "_" + i, EnemyFactory.createEnemy(name));
         }
     }
 

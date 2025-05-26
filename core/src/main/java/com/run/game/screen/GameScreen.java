@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.run.game.Main;
 import com.run.game.manager.GameManager;
 
-public class GameScreen implements Screen { // FIXME: 18.05.2025 убрать физику в данном скрине (World, Box2DDebugRenderer, PlayerService, EnemyPhysicService.
-                                            // FIXME Причем Player и Human Service'ы разделить на физику и графику)
+public class GameScreen implements Screen {
+
     private final Main main;
 
     private final GameManager manager;
