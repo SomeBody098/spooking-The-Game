@@ -53,8 +53,8 @@ public class Player implements Character {
         graphics.update(delta, buttonShowIsActive, buttonScareIsActive, body.isPlayerHasStopMoving());
     }
 
-    public void draw(Batch batch, float parentAlpha) {
-        graphics.draw(batch, parentAlpha, body.getPosition(), body.getWidth(), body.getHeight());
+    public void draw(Batch batch) {
+        graphics.draw(batch, body.getPosition(), body.getWidth(), body.getHeight());
     }
 
     public Vector2 getPosition(){

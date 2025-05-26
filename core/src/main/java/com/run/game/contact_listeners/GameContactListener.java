@@ -1,4 +1,4 @@
-package com.run.game.entities;
+package com.run.game.contact_listeners;
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -10,7 +10,7 @@ import com.run.game.dto.exte.EnemySensorDTO;
 import com.run.game.dto.exte.LeverDTO;
 import com.run.game.dto.exte.PlayerDTO;
 
-public class MainContactListener implements ContactListener {
+public class GameContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         Dto aDto = getDtoFromFixture(contact.getFixtureA());

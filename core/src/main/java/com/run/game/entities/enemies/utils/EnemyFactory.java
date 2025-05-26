@@ -18,7 +18,7 @@ public class EnemyFactory {
     }
 
     public static Enemy createEnemy(String enemyName){  // FIXME: 25.05.2025 пересмотри логику создания врага, возможны проблемы (к примеру постоянное создание Param, а это обращение к json!).
-                                                        // FIXME: 25.05.2025 Скорее всего нужно будет сделать метод, типа isExist в кое каких классах. Но пока: "Работоет - не торогай!"
+                                                        // FIXME: 25.05.2025 Скорее всего нужно будет сделать метод, типа isExist в кое каких классах. Но пока: "Работает - не торогай!"
         ParamFactory.Param param = ParamFactory.getParamForEnemy(enemyName);
         EnemyDTO bodyDto = new EnemyDTO("enemy_" + enemyName);
         EnemySensorDTO sensorDto = new EnemySensorDTO("enemy_sensor_" + enemyName);

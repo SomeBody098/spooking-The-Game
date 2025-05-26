@@ -114,6 +114,33 @@ public class PlayerGraphics {
         );
     }
 
+    public void draw(Batch batch, Vector2 position, float width, float height) {
+        TextureRegion currentFrame = getCurrentFrame();
+
+        float divW = (float) (currentFrame.getRegionWidth() / 2) * Main.UNIT_SCALE;
+        float divH = (float) (currentFrame.getRegionHeight() / 2) * Main.UNIT_SCALE;
+
+        if (isAppearance) {
+            if (transparency >= 1) transparency = 1;
+            else transparency += 0.02f;
+        } else {
+            if (transparency <= 0.2) transparency = 0.2f;
+            else transparency -= 0.02f;
+        }
+
+        batch.setColor(color.r, color.g, color.b, color.a * transparency);
+
+        batch.draw(
+            currentFrame,
+            position.x - divW,
+            position.y - divH,
+            width / Main.PPM,
+            height / Main.PPM
+        );
+
+        batch.setColor(Color.WHITE);
+    }
+
     public void update(float delta, boolean buttonShowIsActive, boolean buttonScareIsActive, boolean playerHasStopMoving) {
         if (!buttonShowIsActive && isAppearance && !hasScares) isAppearance = false;
         else if (buttonShowIsActive) isAppearance = true;
@@ -161,33 +188,6 @@ public class PlayerGraphics {
             stateTimeForSleepingAnimation = 0;
             stateTimeForOnSleepingAnimation = 0;
         }
-    }
-
-    public void draw(Batch batch, float parentAlpha, Vector2 position, float width, float height) {
-        TextureRegion currentFrame = getCurrentFrame();
-
-        float divW = (float) (currentFrame.getRegionWidth() / 2) * Main.UNIT_SCALE;
-        float divH = (float) (currentFrame.getRegionHeight() / 2) * Main.UNIT_SCALE;
-
-        if (isAppearance) {
-            if (transparency >= 1) transparency = 1;
-            else transparency += parentAlpha;
-        } else {
-            if (transparency <= 0.2) transparency = 0.2f;
-            else transparency -= parentAlpha;
-        }
-
-        batch.setColor(color.r, color.g, color.b, color.a * transparency);
-
-        batch.draw(
-            currentFrame,
-            position.x - divW,
-            position.y - divH,
-            width / Main.PPM,
-            height / Main.PPM
-        );
-
-        batch.setColor(Color.WHITE);
     }
 
     private TextureRegion getCurrentFrame() {
